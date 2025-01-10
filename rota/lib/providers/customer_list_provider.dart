@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rota/models/customer.dart'; // Import the Customer model
@@ -11,7 +12,12 @@ class CustomerListNotifier extends StateNotifier<List<Customer>> {
   CustomerListNotifier() : super([]);
 
   Future<void> fetchCustomers() async {
-    final database = FirebaseDatabase.instance.ref('customers');
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      print('No user is logged in');
+      return;
+    }
+    final database = FirebaseDatabase.instance.ref('customers/${user.uid}');
 
     // Listen for changes in the 'customers' node
     database.onValue.listen((event) {
@@ -37,5 +43,10 @@ class CustomerListNotifier extends StateNotifier<List<Customer>> {
     }, onError: (error) {
       print('Error fetching customers: $error');
     });
+  }
+
+  // Clear the customer list (called when user logs out)
+  void clearCustomers() {
+    state = [];
   }
 }

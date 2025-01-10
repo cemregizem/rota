@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_database/firebase_database.dart';
 
@@ -16,7 +17,12 @@ class CustomerNotifier extends StateNotifier<Map<String, dynamic>> {
 
   // Save to Firebase Realtime Database
   Future<void> saveToFirebase() async {
-    final database = FirebaseDatabase.instance.ref('customers');
+     final user = FirebaseAuth.instance.currentUser;
+  if (user == null) {
+    print('No user is logged in');
+    return;
+  }
+    final database = FirebaseDatabase.instance.ref('customers/${user.uid}');
 
     // Push a new customer record to the 'customers' node
     await database.push().set({
@@ -29,6 +35,7 @@ class CustomerNotifier extends StateNotifier<Map<String, dynamic>> {
         'longitude': state['location'].longitude,
       }, // Store LatLng as a string
       'address': state['address'],
+      'deliverStatus':false,
     });
   }
   

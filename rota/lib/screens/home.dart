@@ -1,43 +1,87 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rota/models/customer.dart';
+import 'package:rota/providers/auth_provider.dart';
+
 import 'package:rota/providers/customer_list_provider.dart';
 import 'package:rota/providers/location_provider.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:rota/providers/route_provider.dart';
+import 'package:rota/providers/selected_customer_provider.dart';
 import 'package:rota/screens/customer_list_screen.dart';
-import 'package:rota/screens/customer_screen.dart';
+import 'package:rota/screens/new_customer_screen.dart';
+import 'package:rota/screens/login_screen.dart';
 
 class HomeScreen extends ConsumerWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({Key? key, required this.customers}) : super(key: key);
+  final List<Customer> customers;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final locationAsyncValue = ref.watch(locationProvider);
     final customers = ref.watch(customerListProvider);
+    final selectedCustomer = ref.watch(selectedCustomerProvider);
+    // Logout function call
+    void _logout() async {
+      try {
+        await ref.read(authControllerProvider).logout();
+        // After logout, navigate back to the login screen or other logic
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  const LoginScreen()), // Replace with your login screen
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Logout failed: $e')),
+        );
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Live Location Map'),
+        title: const Text(
+          'The Route',
+          style: TextStyle(
+            fontSize: 30,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFFDC2A34),
+          ),
+        ),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: _logout,
+            tooltip: 'Logout',
+          ),
+        ],
       ),
       body: locationAsyncValue.when(
         data: (position) {
           final userLocation = LatLng(position.latitude, position.longitude);
           // Create markers for each customer
-          final customerMarkers = customers.map((customer) {
-            return Marker(
-              point: customer.location,
-              width: 80.0,
-              height: 80.0,
-              builder: (ctx) => const Icon(
-                Icons.place,
-                size: 40.0,
-                color: Colors.green,
-              ),
-            );
-          }).toList();
-          
+          final customerMarkers = customers
+              .map(
+                (customer) => Marker(
+                  point: customer.location,
+                  width: 80.0,
+                  height: 80.0,
+                  builder: (ctx) => const Icon(
+                    Icons.location_pin,
+                    size: 40.0,
+                    color: Colors.green,
+                  ),
+                ),
+              )
+              .toList();
+          // Create polyline for selected route
+          List<LatLng> polylinePoints = [];
+          if (selectedCustomer != null) {
+            polylinePoints = [userLocation, selectedCustomer.location];
+          }
 
           return Padding(
             padding: const EdgeInsets.all(16.0),
@@ -51,12 +95,12 @@ class HomeScreen extends ConsumerWidget {
                     child: FlutterMap(
                       options: MapOptions(
                         center: userLocation,
-                        zoom: 17.0,
+                        zoom: 16.0,
                       ),
                       children: [
                         TileLayer(
                           urlTemplate:
-                              'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                              'https://tile.thunderforest.com/transport/{z}/{x}/{y}.png?apikey=464632dd9659401a9d66c9f12962d7db',
                           subdomains: ['a', 'b', 'c'],
                         ),
                         MarkerLayer(
@@ -71,9 +115,20 @@ class HomeScreen extends ConsumerWidget {
                                 color: Colors.red,
                               ),
                             ),
-                            ...customerMarkers, // Add all customer markers
+
+                            ...customerMarkers // Add all customer markers
                           ],
                         ),
+                        if (polylinePoints.isNotEmpty)
+                          PolylineLayer(
+                            polylines: [
+                              Polyline(
+                                points: ref.watch(routeProvider),
+                                strokeWidth: 4.0,
+                                color: Colors.blue,
+                              ),
+                            ],
+                          ),
                       ],
                     ),
                   ),

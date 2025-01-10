@@ -8,6 +8,7 @@ class Customer {
   final String phone;
   final String address;
   final LatLng location;
+  bool deliverStatus;
 
   Customer({
     required this.id,
@@ -17,7 +18,10 @@ class Customer {
     required this.phone,
     required this.address,
     required this.location,
+    this.deliverStatus = false,
+
   });
+  
 
   // Convert a customer from a Map (data from Firebase)
   factory Customer.fromMap(String id, Map<String, dynamic> data) {
@@ -33,6 +37,7 @@ class Customer {
       phone: data['phone'] ?? '',
       address: data['address'] ?? '',
       location: LatLng(latitude, longitude),  // Convert latitude & longitude to LatLng
+      deliverStatus: data['deliverStatus'] ?? false,
     );
   }
 
@@ -48,6 +53,7 @@ class Customer {
         'latitude': location.latitude,
         'longitude': location.longitude,
       },
+      'deliverStatus': deliverStatus,
     };
   }
 }

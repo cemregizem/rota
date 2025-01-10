@@ -1,7 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 
-final locationProvider = FutureProvider<Position>((ref) async {
+
+//StreamProvider listens to location updates continuously, ensuring the map updates when your location changes.
+final locationProvider = StreamProvider<Position>((ref) async* {
   // Request location permissions
   LocationPermission permission = await Geolocator.checkPermission();
   if (permission == LocationPermission.denied) {
@@ -15,8 +17,11 @@ final locationProvider = FutureProvider<Position>((ref) async {
     throw Exception('Location permissions are permanently denied');
   }
 
-  // Fetch the current position
-  return await Geolocator.getCurrentPosition(
-    desiredAccuracy: LocationAccuracy.high,
+  // Continuously stream location updates
+  yield* Geolocator.getPositionStream(
+    locationSettings: LocationSettings(
+      accuracy: LocationAccuracy.high,
+      distanceFilter: 1000, // Minimum distance in meters to trigger an update
+    ),
   );
 });

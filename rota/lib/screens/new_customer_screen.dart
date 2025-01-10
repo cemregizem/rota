@@ -20,10 +20,11 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
   @override
   Widget build(BuildContext context) {
     final customerData = ref.watch(customerProvider);
+    
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Customer'),
+        title: const Text('New Customer'),
         centerTitle: true,
       ),
       body: SingleChildScrollView(

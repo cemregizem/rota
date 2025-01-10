@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rota/controller/auth_controller.dart';
+import 'package:rota/components/elevatedButton.dart';
+import 'package:rota/components/textformfield.dart';
+
+import 'package:rota/providers/auth_provider.dart';
+import 'package:rota/providers/customer_list_provider.dart';
 import 'package:rota/providers/package_provider.dart';
 import 'package:rota/screens/home.dart';
 import 'package:rota/screens/register_screen.dart';
-
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -16,64 +19,111 @@ class LoginScreen extends ConsumerStatefulWidget {
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   void _login() async {
-    try {
-      await ref.read(authControllerProvider).login(
-            _emailController.text,
-            _passwordController.text,
-          );
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ProviderScope(
-            overrides: [
-              userEmailProvider.overrideWithValue(_emailController.text),
-            ],
-            child: HomeScreen(),
+    if (_formKey.currentState?.validate() ?? false) {
+      try {
+        await ref.read(authControllerProvider).login(
+              _emailController.text,
+              _passwordController.text,
+            );
+        // Get the customer list (replace with actual logic if needed)
+        final customers = ref.read(customerListProvider);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProviderScope(
+              overrides: [
+                userEmailProvider.overrideWithValue(_emailController.text),
+              ],
+              child: HomeScreen(customers: customers),
+            ),
           ),
-        ),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString())),
-      );
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.toString())),
+        );
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Login')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: _emailController,
-              decoration: const InputDecoration(labelText: 'Email'),
-            ),
-            TextField(
-              controller: _passwordController,
-              decoration: const InputDecoration(labelText: 'Password'),
-              obscureText: true,
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _login,
-              child: const Text('Login'),
-            ),
-               SizedBox(height: 10),
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => RegisterScreen()),
-                );
-              },
-              child: Text('Don’t have an account? Register here'),
-            ),
-          ],
+      backgroundColor: Colors.white,
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Image at the top
+
+              Image.asset(
+                'assets/images/logo2.png', // Replace with your image path
+                height: 400, // Adjust size of the image
+                width: 400, // Adjust size of the image
+              ),
+              // Subtitle
+
+              // Form
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 32, vertical: 40),
+                width: double.infinity,
+                constraints: BoxConstraints(maxWidth: 400),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      TextField(
+                        controller: _emailController,
+                        decoration: const InputDecoration(labelText: 'Email'),
+                      ),
+                      TextField(
+                        controller: _passwordController,
+                        decoration:
+                            const InputDecoration(labelText: 'Password'),
+                        obscureText: true,
+                      ),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: _login,
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(double.infinity, 50),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          backgroundColor: const Color(0xFFDC2A34), 
+                        ),
+                        child: const Text(
+                          'Login',
+                          style: TextStyle(color: Colors.white,fontSize: 18),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Center(
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => RegisterScreen()),
+                    );
+                  },
+                  child: const Text(
+                    'Don’t have an account? Register here',
+                    style: TextStyle(fontSize: 14),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
