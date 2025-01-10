@@ -14,7 +14,6 @@ class CustomerListNotifier extends StateNotifier<List<Customer>> {
   Future<void> fetchCustomers() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
-      print('No user is logged in');
       return;
     }
     final database = FirebaseDatabase.instance.ref('customers/${user.uid}');

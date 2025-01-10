@@ -9,6 +9,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:rota/providers/route_provider.dart';
 import 'package:rota/providers/selected_customer_provider.dart';
+import 'package:rota/providers/state_provider.dart';
 import 'package:rota/screens/customer_list_screen.dart';
 import 'package:rota/screens/new_customer_screen.dart';
 import 'package:rota/screens/login_screen.dart';
@@ -21,7 +22,7 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final locationAsyncValue = ref.watch(locationProvider);
     final customers = ref.watch(customerListProvider);
-    final selectedCustomer = ref.watch(selectedCustomerProvider);
+   // final selectedCustomer = ref.watch(selectedCustomerProvider);
     // Logout function call
     void _logout() async {
       try {
@@ -77,19 +78,14 @@ class HomeScreen extends ConsumerWidget {
                 ),
               )
               .toList();
-          // Create polyline for selected route
-          List<LatLng> polylinePoints = [];
-          if (selectedCustomer != null) {
-            polylinePoints = [userLocation, selectedCustomer.location];
-          }
-
+        
           return Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
                 // Map section
                 Expanded(
-                  flex: 2, // Map takes 2/3 of the screen
+                  flex: 3, // Map takes 2/3 of the screen
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(12.0),
                     child: FlutterMap(
@@ -100,7 +96,7 @@ class HomeScreen extends ConsumerWidget {
                       children: [
                         TileLayer(
                           urlTemplate:
-                              'https://tile.thunderforest.com/transport/{z}/{x}/{y}.png?apikey=464632dd9659401a9d66c9f12962d7db',
+                              'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
                           subdomains: ['a', 'b', 'c'],
                         ),
                         MarkerLayer(
@@ -119,11 +115,12 @@ class HomeScreen extends ConsumerWidget {
                             ...customerMarkers // Add all customer markers
                           ],
                         ),
-                        if (polylinePoints.isNotEmpty)
+                        if (ref.watch(polylineStateProvider).isNotEmpty)
                           PolylineLayer(
                             polylines: [
                               Polyline(
-                                points: ref.watch(routeProvider),
+                                points: ref.watch(
+                                    polylineStateProvider), // Use the state directly
                                 strokeWidth: 4.0,
                                 color: Colors.blue,
                               ),

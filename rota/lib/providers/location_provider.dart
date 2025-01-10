@@ -21,7 +21,7 @@ final locationProvider = StreamProvider<Position>((ref) async* {
   yield* Geolocator.getPositionStream(
     locationSettings: LocationSettings(
       accuracy: LocationAccuracy.high,
-      distanceFilter: 1000, // Minimum distance in meters to trigger an update
+      distanceFilter: 100, // Minimum distance in meters to trigger an update
     ),
   );
 });

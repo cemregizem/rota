@@ -8,6 +8,8 @@ import 'package:rota/components/elevatedButton.dart';
 import 'package:rota/providers/location_provider.dart';
 import 'package:rota/providers/route_provider.dart';
 import 'package:rota/providers/selected_customer_provider.dart';
+import 'package:rota/providers/state_provider.dart';
+import 'package:rota/screens/home.dart';
 
 class CustomerDetailScreen extends ConsumerWidget {
   final Customer customer;
@@ -81,23 +83,46 @@ class CustomerDetailScreen extends ConsumerWidget {
                         ),
                         const SizedBox(width: 16), // Space between buttons
                         // "Create Route" button
-       CommonElevatedButton(
-  onPressed: () async {
-    final position = await ref.read(locationProvider.future);
-    final userLocation = LatLng(position.latitude, position.longitude);
-    final customerLocation = customer.location;
+                        CommonElevatedButton(
+                          onPressed: () async {
+                            final position =
+                                await ref.read(locationProvider.future);
+                            final userLocation =
+                                LatLng(position.latitude, position.longitude);
+                            final customerLocation = customer.location;
 
-    // Update the routeProvider with the new route
-    ref.read(routeProvider.notifier).state = [userLocation, customerLocation];
+                            try {
+                              // Fetch the route
+                              final polyline = await ref.read(routeProvider({
+                                'userLocation': userLocation,
+                                'customerLocation': customerLocation
+                              }).future);
 
-    // Navigate back to Home Screen
-    Navigator.pop(context);
-  },
-  label: 'Create Route',
-  isDelivered: false,
-),
+                              // Update the polyline state
 
+                              ref.read(polylineStateProvider.notifier).state =
+                                  polyline;
 
+                              // Navigate back to Home Screen
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const HomeScreen(
+                                    customers: [],
+                                  ),
+                                ),
+                              );
+                            } catch (e) {
+                              // Handle error
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    content: Text('Error creating route: $e')),
+                              );
+                            }
+                          },
+                          label: 'Create Route',
+                          isDelivered: false,
+                        ),
                       ],
                     ),
                   ),

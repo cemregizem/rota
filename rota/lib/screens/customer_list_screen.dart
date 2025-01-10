@@ -29,7 +29,7 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
         centerTitle: true,
       ),
       body: customers.isEmpty
-          ? const Center(child: CircularProgressIndicator())
+          ? Center(child:Text('There isnt any customer!'))
           : ListView.builder(
               itemCount: customers.length,
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
