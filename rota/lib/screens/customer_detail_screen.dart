@@ -5,6 +5,7 @@ import 'package:rota/models/customer.dart';
 import 'package:rota/providers/customer_delivered_provider.dart';
 import 'package:rota/components/card.dart';
 import 'package:rota/components/elevatedButton.dart';
+import 'package:rota/providers/customer_provider.dart';
 import 'package:rota/providers/location_provider.dart';
 import 'package:rota/providers/route_provider.dart';
 import 'package:rota/providers/state_provider.dart';
@@ -18,6 +19,7 @@ class CustomerDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+ 
     return Scaffold(
       appBar: AppBar(title: const Text('Customer Details')),
       body: Padding(
@@ -62,17 +64,15 @@ class CustomerDetailScreen extends ConsumerWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // "Mark as Delivered" button
+                       
                         CommonElevatedButton(
                           onPressed: () async {
-                            // Call the provider to update the deliverStatus
+                            // provider kullanarak deliverystatusu güncellemek için asenkron işlem yapılır
                             await ref.read(
                                 customerDeliverStatusProvider(customer).future);
 
-                            // Optionally, delay for smooth UX
+                            // Butonun güncellenmesi için
                             await Future.delayed(const Duration(seconds: 2));
-
-                            // Close the detail screen
                             Navigator.pop(context);
                           },
                           label: customer.deliverStatus
@@ -80,27 +80,26 @@ class CustomerDetailScreen extends ConsumerWidget {
                               : 'Mark as Delivered',
                           isDelivered: customer.deliverStatus,
                         ),
-                        const SizedBox(width: 16), // Space between buttons
-                        // "Create Route" button
+                        const SizedBox(width: 16), 
+                       
                         CommonElevatedButton(
                           onPressed: () async {
                             final position =
                                 await ref.read(locationProvider.future);
                             final userLocation =
-                                LatLng(position.latitude, position.longitude);
-                            final customerLocation = customer.location;
+                                LatLng(position.latitude, position.longitude);//kullanıcı lokasyonu
+                            final customerLocation = customer.location;//müşteri lokasyonu
 
-                            try {
-                              // Fetch the route
+                            try { 
+                              // Rota oluşturulur
                               final polyline = await ref.read(routeProvider({
                                 'userLocation': userLocation,
                                 'customerLocation': customerLocation
                               }).future);
 
                               // Update the polyline state
-
                               ref.read(polylineStateProvider.notifier).state =
-                                  polyline;
+                                  polyline; 
 
                               // Navigate back to Home Screen
                               Navigator.push(

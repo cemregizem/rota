@@ -12,12 +12,13 @@ import 'package:rota/services/auth_service.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({Key? key, required this.customers}) : super(key: key);
+  //List<Consumer> parametre olarak alırız.Map üzerinde göstereceğimiz için
   final List<Customer> customers;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final locationAsyncValue = ref.watch(locationProvider);
-    final customers = ref.watch(customerListProvider);
+    final locationAsyncValue = ref.watch(locationProvider); //Kullanıcının şuanki lokasyonunu sağlamak için locationProviderı izler
+    final customers = ref.watch(customerListProvider);//müşteri listesi
     final AuthService _authService = AuthService();
      
   
@@ -46,9 +47,9 @@ class HomeScreen extends ConsumerWidget {
       ),
       body: locationAsyncValue.when(
         data: (position) {
-          final userLocation = LatLng(position.latitude, position.longitude);
+          final userLocation = LatLng(position.latitude, position.longitude); //lokasyon elde edilince latitude ve lonitude olarak çevirir
           // Create markers for each customer
-          final customerMarkers = customers
+          final customerMarkers = customers //Her kullanıcı için marker listesi yaratır
               .map(
                 (customer) => Marker(
                   point: customer.location,
@@ -72,7 +73,7 @@ class HomeScreen extends ConsumerWidget {
                   flex: 3, // Map takes 2/3 of the screen
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(12.0),
-                    child: FlutterMap(
+                    child: FlutterMap( //fluttermap kullanılarak haritayı gösteririz
                       options: MapOptions(
                         center: userLocation,
                         zoom: 16.0,
@@ -83,7 +84,7 @@ class HomeScreen extends ConsumerWidget {
                               'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
                           subdomains: ['a', 'b', 'c'],
                         ),
-                        MarkerLayer(
+                        MarkerLayer( //kullanıcı ve müşterilerinin yer pinlerini gösteririz
                           markers: [
                             Marker(
                               point: userLocation,
@@ -99,7 +100,7 @@ class HomeScreen extends ConsumerWidget {
                             ...customerMarkers // Add all customer markers
                           ],
                         ),
-                        if (ref.watch(polylineStateProvider).isNotEmpty)
+                        if (ref.watch(polylineStateProvider).isNotEmpty) //Eğer bir rota belirlenmişse bu layerda gösterilir
                           PolylineLayer(
                             polylines: [
                               Polyline(
@@ -114,16 +115,17 @@ class HomeScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 30.0), // Space between map and buttons
+                const SizedBox(height: 30.0), 
+
                 // Button section
                 Expanded(
                   flex: 1, // Buttons take 1/3 of the screen
                   child: Column(
-                    // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    
                     children: [
                       ElevatedButton.icon(
                         onPressed: () {
-                          // Navigate to Customer List Page
+                         
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -143,7 +145,7 @@ class HomeScreen extends ConsumerWidget {
                       const SizedBox(height: 10.0),
                       ElevatedButton.icon(
                         onPressed: () {
-                          // Navigate to Add New Customer Page
+                          
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -167,7 +169,7 @@ class HomeScreen extends ConsumerWidget {
             ),
           );
         },
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const Center(child: CircularProgressIndicator()), //loading spinner gösterilir lokasyon yüklenirken
         error: (error, stack) {
           debugPrint('Error occurred: $error');
           debugPrint('Stack trace: $stack');

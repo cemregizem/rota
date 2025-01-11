@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:geocoding/geocoding.dart'; // For reverse geocoding
+import 'package:geocoding/geocoding.dart';
 import 'package:rota/providers/customer_provider.dart';
 import 'package:rota/screens/location_selection_screen.dart';
 
@@ -14,13 +14,13 @@ class CustomerScreen extends ConsumerStatefulWidget {
 
 class _CustomerScreenState extends ConsumerState<CustomerScreen> {
   final _formKey = GlobalKey<FormState>();
-  LatLng? selectedLocation;
-  String? address;
+  LatLng? selectedLocation; //kullanıcı tarafından seçilen lokasyonu tutar
+  String? address; //lokasyonun karşılığı olan adresi tutar
 
-  @override
+ 
+@override
   Widget build(BuildContext context) {
     final customerData = ref.watch(customerProvider);
-    
 
     return Scaffold(
       appBar: AppBar(
@@ -50,8 +50,7 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
                     labelText: 'Package Number',
                     border: OutlineInputBorder(),
                   ),
-                  onChanged: (value) => ref
-                      .read(customerProvider.notifier)
+                  onChanged: (value) => ref.read(customerProvider.notifier) //müşteri verisini güncellenir.
                       .updateField('packageNumber', value),
                   validator: (value) => value == null || value.isEmpty
                       ? 'Please enter a package number'
@@ -111,12 +110,13 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
                     labelText: 'Select Location for address',
                     border: OutlineInputBorder(),
                   ),
-                  controller: TextEditingController(text: address),
+                  controller:
+                      TextEditingController(text: customerData['address']),
                   readOnly: true, // Make the field read-only
                 ),
                 const SizedBox(height: 16),
 
-                // Location Selector Button
+                // Location Select Button
                 ElevatedButton.icon(
                   onPressed: () async {
                     final location = await Navigator.push<LatLng>(
@@ -128,12 +128,9 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
                       ref
                           .read(customerProvider.notifier)
                           .updateField('location', location);
-                      setState(() {
-                        selectedLocation = location;
-                      });
 
                       try {
-                        // Reverse geocoding to get address
+                        // koordinatları kullanarak ters geocoding işlemi yapan bir fonksiyon
                         final placemarks = await placemarkFromCoordinates(
                           location.latitude,
                           location.longitude,
@@ -142,20 +139,13 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
                           final place = placemarks.first;
                           final formattedAddress =
                               '${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.country}';
-                          setState(() {
-                            address = formattedAddress;
-                          });
-                          ref
-                              .read(customerProvider.notifier)
-                              .updateField('address', formattedAddress);
+                            //Alnınan yer bilgileri bu formatta birleştirilir.
+                          ref.read(customerProvider.notifier)
+                              .updateField('address', formattedAddress); //Alınan yer bilgileri customerProvider a kaydedilir
                         } else {
                           throw Exception('No placemarks found.');
                         }
                       } catch (e) {
-                        // Handle failure in reverse geocoding
-                        setState(() {
-                          address = 'Failed to get address';
-                        });
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text('Failed to get address: $e')),
                         );
