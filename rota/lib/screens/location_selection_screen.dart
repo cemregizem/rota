@@ -49,11 +49,9 @@ class _LocationSelectorScreenState extends State<LocationSelectorScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-         onPressed: () {
-    print('Selected Location: $selectedLocation');
-    Navigator.pop(context, selectedLocation);
-  },
-       
+        onPressed: () {
+          Navigator.pop(context, selectedLocation);
+        },
         child: const Icon(Icons.check),
       ),
     );

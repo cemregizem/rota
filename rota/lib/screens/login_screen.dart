@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rota/components/elevatedButton.dart';
-import 'package:rota/components/textformfield.dart';
-
 import 'package:rota/providers/auth_provider.dart';
 import 'package:rota/providers/customer_list_provider.dart';
 import 'package:rota/providers/package_provider.dart';
 import 'package:rota/screens/home.dart';
 import 'package:rota/screens/register_screen.dart';
 
-class LoginScreen extends ConsumerStatefulWidget {
+class LoginScreen extends ConsumerStatefulWidget { //In riverpod we need extend ConsumerStatefulWidget instead of StatefulWidget
   const LoginScreen({super.key});
 
   @override
-  ConsumerState<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState(); //ConsumerState
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
@@ -22,9 +19,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
 
   void _login() async {
-    if (_formKey.currentState?.validate() ?? false) {
+    if (_formKey.currentState?.validate() ?? false) { //Checking validation of correct usage of _formkey
       try {
-        await ref.read(authControllerProvider).login(
+        await ref.read(authControllerProvider).login( //reads authControllerProvider and triggers login
               _emailController.text,
               _passwordController.text,
             );
@@ -59,15 +56,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Image at the top
-
               Image.asset(
-                'assets/images/logo2.png', // Replace with your image path
-                height: 400, // Adjust size of the image
-                width: 400, // Adjust size of the image
+                'assets/images/logo2.png', 
+                height: 400, 
+                width: 400, 
               ),
-              // Subtitle
-
+              
               // Form
               Container(
                 padding:

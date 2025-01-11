@@ -108,7 +108,7 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
                 // Address field (auto-filled)
                 TextFormField(
                   decoration: const InputDecoration(
-                    labelText: 'Address',
+                    labelText: 'Select Location for address',
                     border: OutlineInputBorder(),
                   ),
                   controller: TextEditingController(text: address),
