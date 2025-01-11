@@ -15,10 +15,16 @@ class CustomerScreen extends ConsumerStatefulWidget {
 class _CustomerScreenState extends ConsumerState<CustomerScreen> {
   final _formKey = GlobalKey<FormState>();
   LatLng? selectedLocation; //kullanıcı tarafından seçilen lokasyonu tutar
-  String? address; //lokasyonun karşılığı olan adresi tutar
+  late TextEditingController _addressController; // Controller for address field
 
- 
-@override
+  @override
+  void initState() {
+    super.initState();
+    _addressController = TextEditingController(); // Initialize controller
+  }
+
+
+  @override
   Widget build(BuildContext context) {
     final customerData = ref.watch(customerProvider);
 
@@ -110,8 +116,7 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
                     labelText: 'Select Location for address',
                     border: OutlineInputBorder(),
                   ),
-                  controller:
-                      TextEditingController(text: customerData['address']),
+                  controller:_addressController,
                   readOnly: true, // Make the field read-only
                 ),
                 const SizedBox(height: 16),
@@ -141,7 +146,9 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
                               '${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.country}';
                             //Alnınan yer bilgileri bu formatta birleştirilir.
                           ref.read(customerProvider.notifier)
-                              .updateField('address', formattedAddress); //Alınan yer bilgileri customerProvider a kaydedilir
+                              .updateField('address', formattedAddress); 
+                              //Alınan yer bilgileri customerProvider a kaydedilir
+                              _addressController.text = formattedAddress;
                         } else {
                           throw Exception('No placemarks found.');
                         }
@@ -175,6 +182,9 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
                         const SnackBar(
                             content: Text('Customer added successfully!')),
                       );
+                      
+                      _addressController.clear(); // Clear address field
+                    
                       Navigator.pop(context);
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
