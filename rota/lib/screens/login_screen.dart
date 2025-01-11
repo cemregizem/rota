@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rota/providers/auth_provider.dart';
-import 'package:rota/providers/customer_list_provider.dart';
-import 'package:rota/providers/package_provider.dart';
-import 'package:rota/screens/home.dart';
 import 'package:rota/screens/register_screen.dart';
+import 'package:rota/services/auth_service.dart';
 
 class LoginScreen extends ConsumerStatefulWidget { //In riverpod we need extend ConsumerStatefulWidget instead of StatefulWidget
   const LoginScreen({super.key});
@@ -18,33 +15,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  void _login() async {
-    if (_formKey.currentState?.validate() ?? false) { //Checking validation of correct usage of _formkey
-      try {
-        await ref.read(authControllerProvider).login( //reads authControllerProvider and triggers login
-              _emailController.text,
-              _passwordController.text,
-            );
-        // Get the customer list (replace with actual logic if needed)
-        final customers = ref.read(customerListProvider);
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ProviderScope(
-              overrides: [
-                userEmailProvider.overrideWithValue(_emailController.text),
-              ],
-              child: HomeScreen(customers: customers),
-            ),
-          ),
-        );
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.toString())),
-        );
-      }
-    }
-  }
+  final AuthService _authService = AuthService(); // Instantiate AuthService
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +55,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ),
                       const SizedBox(height: 20),
                       ElevatedButton(
-                        onPressed: _login,
+                       onPressed: () async {
+                          if (_formKey.currentState?.validate() ?? false) {
+                            await _authService.login(
+                              ref,
+                              _emailController.text,
+                              _passwordController.text,
+                              context,
+                            );
+                          }
+                        },
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size(double.infinity, 50),
                           shape: RoundedRectangleBorder(

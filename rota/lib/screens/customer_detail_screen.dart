@@ -7,7 +7,6 @@ import 'package:rota/components/card.dart';
 import 'package:rota/components/elevatedButton.dart';
 import 'package:rota/providers/location_provider.dart';
 import 'package:rota/providers/route_provider.dart';
-import 'package:rota/providers/selected_customer_provider.dart';
 import 'package:rota/providers/state_provider.dart';
 import 'package:rota/screens/home.dart';
 

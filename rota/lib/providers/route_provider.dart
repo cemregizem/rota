@@ -4,7 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 
 final routeProvider = FutureProvider.family<List<LatLng>, Map<String, LatLng>>(
+  // I used FutureProvider to handle async. data (API call)
   (ref, locations) async {
+
     try {
       final userLocation = locations['userLocation']!;
       final customerLocation = locations['customerLocation']!;
@@ -13,9 +15,7 @@ final routeProvider = FutureProvider.family<List<LatLng>, Map<String, LatLng>>(
       final url =
           'https://api.openrouteservice.org/v2/directions/driving-car?api_key=$apiKey&start=${userLocation.longitude},${userLocation.latitude}&end=${customerLocation.longitude},${customerLocation.latitude}';
 
-      final response = await http.get(
-        Uri.parse(url), /* headers: headers*/
-      );
+      final response = await http.get(Uri.parse(url));
    
 
       if (response.statusCode == 200) {
@@ -28,17 +28,19 @@ final routeProvider = FutureProvider.family<List<LatLng>, Map<String, LatLng>>(
           final coordinates =
               data['features'][0]['geometry']['coordinates'] as List;
 
-         
 
-          return coordinates
+         return coordinates
               .map((point) => LatLng(point[1], point[0]))
               .toList();
+
         } else {
           throw Exception('Invalid data format in API response.');
         }
+
       } else {
         throw Exception('API Error: ${response.body}');
       }
+
     } catch (e) {
       print('Error in routeProvider: $e');
       rethrow;

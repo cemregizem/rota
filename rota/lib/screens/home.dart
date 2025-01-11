@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rota/models/customer.dart';
-import 'package:rota/providers/auth_provider.dart';
-
 import 'package:rota/providers/customer_list_provider.dart';
 import 'package:rota/providers/location_provider.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:rota/providers/route_provider.dart';
-import 'package:rota/providers/selected_customer_provider.dart';
 import 'package:rota/providers/state_provider.dart';
 import 'package:rota/screens/customer_list_screen.dart';
 import 'package:rota/screens/new_customer_screen.dart';
-import 'package:rota/screens/login_screen.dart';
+import 'package:rota/services/auth_service.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({Key? key, required this.customers}) : super(key: key);
@@ -22,24 +18,9 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final locationAsyncValue = ref.watch(locationProvider);
     final customers = ref.watch(customerListProvider);
-   // final selectedCustomer = ref.watch(selectedCustomerProvider);
-    // Logout function call
-    void _logout() async {
-      try {
-        await ref.read(authControllerProvider).logout();
-        // After logout, navigate back to the login screen or other logic
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>
-                  const LoginScreen()), // Replace with your login screen
-        );
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Logout failed: $e')),
-        );
-      }
-    }
+    final AuthService _authService = AuthService();
+     
+  
 
     return Scaffold(
       appBar: AppBar(
@@ -55,7 +36,10 @@ class HomeScreen extends ConsumerWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-            onPressed: _logout,
+             onPressed: () async {
+              // Ensure logout is wrapped in an async function
+              await _authService.logout(ref, context);
+            },
             tooltip: 'Logout',
           ),
         ],
