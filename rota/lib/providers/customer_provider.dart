@@ -11,6 +11,23 @@ class CustomerNotifier extends StateNotifier<Map<String, dynamic>> {//Müşteri 
 
   CustomerNotifier() : super({});  
 
+   // Fetch the current customer count for the logged-in user
+  Future<int> getCustomerCount() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      print('No user is logged in');
+      return 0;  // Return 0 if the user is not logged in
+    }
+
+    final database = FirebaseDatabase.instance.ref('customers/${user.uid}');
+    final snapshot = await database.get();
+    final data = snapshot.value as Map? ?? {};
+
+    
+    return data.isEmpty ? 1 : data.length + 1;
+  }
+
+
 
  void updateField(String key, dynamic value) {
   state = {...state, key: value};  // Müşteri bilgilerinde bir alanı günceller.
@@ -27,6 +44,9 @@ class CustomerNotifier extends StateNotifier<Map<String, dynamic>> {//Müşteri 
     final database = FirebaseDatabase.instance.ref('customers/${user.uid}');
     //giriş yapmış kullanıcıya yeni customer ekler.
 
+    // Get the current customer count to assign a customer number
+    int customerNumber = await getCustomerCount() ;
+
     await database.push().set({
       'packageNumber':state['packageNumber'],
       'name': state['name'],
@@ -38,6 +58,7 @@ class CustomerNotifier extends StateNotifier<Map<String, dynamic>> {//Müşteri 
       }, // Store LatLng as a string
       'address': state['address'],
       'deliverStatus':false,
+      'customerNumber': customerNumber, 
     });
   }
 

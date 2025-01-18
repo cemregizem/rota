@@ -5,6 +5,7 @@ import 'package:rota/models/customer.dart';
 import 'package:rota/providers/customer_delivered_provider.dart';
 import 'package:rota/components/card.dart';
 import 'package:rota/components/elevated_button.dart';
+import 'package:rota/providers/customer_list_provider.dart';
 import 'package:rota/providers/location_provider.dart';
 import 'package:rota/providers/route_provider.dart';
 import 'package:rota/providers/state_provider.dart';
@@ -72,6 +73,8 @@ class CustomerDetailScreen extends ConsumerWidget {
 
                             // Butonun güncellenmesi için
                             await Future.delayed(const Duration(seconds: 2));
+
+                            
                             Navigator.pop(context);
                           },
                           label: customer.deliverStatus

@@ -40,7 +40,7 @@ class AuthService {
     try {
       await ref.read(authControllerProvider).logout();  // Call logout from authControllerProvider
 
-    // Polylines'ı güncellemek için doğru yöntem
+    // Polylines'ı güncellemek için
     ref.read(polylineStateProvider.notifier).updatePolyline([]); 
 
     ref.read(customerProvider.notifier).clearCustomerData(); // Müşteri verilerini sıfırlama
