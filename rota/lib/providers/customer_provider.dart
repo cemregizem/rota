@@ -40,5 +40,10 @@ class CustomerNotifier extends StateNotifier<Map<String, dynamic>> {//Müşteri 
       'deliverStatus':false,
     });
   }
+
+    // Müşteri verilerini sıfırlamak için kullanılan metot
+  void clearCustomerData() {
+    state = {};  // Müşteri verilerini sıfırla
+  }
   
 }

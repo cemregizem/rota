@@ -3,7 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 //Kullanıcının adres için haritadan lokasyon seçtiği ekran
 class LocationSelectorScreen extends StatefulWidget {
-  const LocationSelectorScreen({Key? key}) : super(key: key);
+  const LocationSelectorScreen({super.key});
 
   @override
   _LocationSelectorScreenState createState() => _LocationSelectorScreenState();
