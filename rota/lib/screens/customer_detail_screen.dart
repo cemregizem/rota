@@ -4,8 +4,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:rota/models/customer.dart';
 import 'package:rota/providers/customer_delivered_provider.dart';
 import 'package:rota/components/card.dart';
-import 'package:rota/components/elevatedButton.dart';
-import 'package:rota/providers/customer_provider.dart';
+import 'package:rota/components/elevated_button.dart';
 import 'package:rota/providers/location_provider.dart';
 import 'package:rota/providers/route_provider.dart';
 import 'package:rota/providers/state_provider.dart';
@@ -98,8 +97,7 @@ class CustomerDetailScreen extends ConsumerWidget {
                               }).future);
 
                               // Update the polyline state
-                              ref.read(polylineStateProvider.notifier).state =
-                                  polyline; 
+                              ref.read(polylineStateProvider.notifier).updatePolyline(polyline);
 
                               // Navigate back to Home Screen
                               Navigator.push(
