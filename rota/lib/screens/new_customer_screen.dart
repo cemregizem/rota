@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:rota/components/bottom_navigation_bar.dart';
 import 'package:rota/providers/customer_provider.dart';
 import 'package:rota/screens/location_selection_screen.dart';
 
@@ -30,7 +31,10 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('New Customer'),
+        title: const Text('New Customer',style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -206,6 +210,7 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
           ),
         ),
       ),
+      bottomNavigationBar: const CustomBottomNavigationBar(),
     );
   }
 }

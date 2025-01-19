@@ -23,6 +23,7 @@ class AuthController {
       await _ref.read(firebaseAuthProvider).createUserWithEmailAndPassword(
             email: email,
             password: password,
+          
           );
     } catch (e) {
        print('Error during sign up: $e');
