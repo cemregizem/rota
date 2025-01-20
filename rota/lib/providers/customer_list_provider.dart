@@ -16,7 +16,7 @@ class CustomerListNotifier extends StateNotifier<List<Customer>> {
     if (user == null) {
       return;
     }
-    final database = FirebaseDatabase.instance.ref('customers/${user.uid}');
+    final database = FirebaseDatabase.instance.ref('rotaData/${user.uid}/customers');
 
     // Listen for changes in the 'customers' node
     database.onValue.listen((event) {

@@ -19,7 +19,7 @@ class CustomerNotifier extends StateNotifier<Map<String, dynamic>> {//Müşteri 
       return 0;  // Return 0 if the user is not logged in
     }
 
-    final database = FirebaseDatabase.instance.ref('customers/${user.uid}');
+    final database = FirebaseDatabase.instance.ref('rotaData/${user.uid}/customers');
     final snapshot = await database.get();
     final data = snapshot.value as Map? ?? {};
 
@@ -41,7 +41,7 @@ class CustomerNotifier extends StateNotifier<Map<String, dynamic>> {//Müşteri 
     print('No user is logged in');
     return;
   }
-    final database = FirebaseDatabase.instance.ref('customers/${user.uid}');
+    final database = FirebaseDatabase.instance.ref('rotaData/${user.uid}/customers');
     //giriş yapmış kullanıcıya yeni customer ekler.
 
     // Get the current customer count to assign a customer number

@@ -17,7 +17,7 @@ final customerDeliverStatusProvider =
 
   // Update the deliverStatus in Firebase
   final database =
-      FirebaseDatabase.instance.ref('customers/${user.uid}/${customer.id}');
+      FirebaseDatabase.instance.ref('rotaData/${user.uid}/customers/${customer.id}');
 
   await database.update({
     'deliverStatus': newStatus,

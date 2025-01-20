@@ -1,3 +1,4 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rota/providers/customer_list_provider.dart';
@@ -18,16 +19,31 @@ class AuthController {
   AuthController(this._ref);
 
   // Sign up function
-  Future<void> signUp(String email, String password) async {
+  Future<void> signUp(String email, String password, String name,
+      String surname, String licensePlate) async {
     try {
-      await _ref.read(firebaseAuthProvider).createUserWithEmailAndPassword(
-            email: email,
-            password: password,
-          
-          );
+      UserCredential userCredential =
+          await _ref.read(firebaseAuthProvider).createUserWithEmailAndPassword(
+                email: email,
+                password: password,
+              );
+
+      // Store additional user info in the customers table
+      final user = userCredential.user;
+
+      if (user != null) {
+        final DatabaseReference dbRef =
+            FirebaseDatabase.instance.ref().child('rotaData/${user.uid}/userInfo');
+        await dbRef.set({
+          'name': name,
+          'surname': surname,
+          'licensePlate': licensePlate,
+          'email': email,
+        });
+      }
     } catch (e) {
-       print('Error during sign up: $e');
-    rethrow;
+      print('Error during sign up: $e');
+      rethrow;
     }
   }
 
@@ -38,7 +54,7 @@ class AuthController {
             email: email,
             password: password,
           );
-            // Fetch customer list for the logged-in user
+      // Fetch customer list for the logged-in user
       await _ref.read(customerListProvider.notifier).fetchCustomers();
     } catch (e) {
       rethrow;

@@ -13,6 +13,10 @@ class RegisterScreen extends ConsumerStatefulWidget {
 class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _nameController = TextEditingController();
+  final _surnameController = TextEditingController();
+  final _licensePlateController = TextEditingController();
+
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -82,7 +86,53 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           return null;
                         },
                       ),
-                      
+
+                      const SizedBox(height: 20),
+                      TextFormField(
+                        controller: _nameController,
+                        decoration: const InputDecoration(
+                          labelText: 'name',
+                          prefixIcon: Icon(Icons.person),
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your name';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      TextFormField(
+                        controller: _surnameController,
+                        decoration: const InputDecoration(
+                          labelText: 'surname',
+                          prefixIcon: Icon(Icons.credit_card_rounded),
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your surname';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      TextFormField(
+                        controller: _licensePlateController,
+                        decoration: const InputDecoration(
+                          labelText: 'license plate',
+                          prefixIcon: Icon(Icons.car_rental),
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your license plate';
+                          }
+                          return null;
+                        },
+                      ),
+
                       const SizedBox(height: 20),
 
                       // Register Button
@@ -93,6 +143,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                               ref,
                               _emailController.text.trim(),
                               _passwordController.text.trim(),
+                              _nameController.text.trim(),
+                              _surnameController.text.trim(),
+                              _licensePlateController.text.trim(),
                               context,
                             );
                           }
