@@ -9,6 +9,7 @@ class Customer {
   final String address;
   final LatLng location;
   bool deliverStatus;
+  final int customerNumber; // Ensure this is of type int
 
   Customer({
     required this.id,
@@ -19,6 +20,7 @@ class Customer {
     required this.address,
     required this.location,
     this.deliverStatus = false,
+    required this.customerNumber,
 
   });
   
@@ -38,6 +40,9 @@ class Customer {
       address: data['address'] ?? '',
       location: LatLng(latitude, longitude),  // Convert latitude & longitude to LatLng
       deliverStatus: data['deliverStatus'] ?? false,
+      customerNumber: data['customerNumber'] ?? 0, // Get customerNumber from the database
+      
+      
     );
   }
 
@@ -54,6 +59,7 @@ class Customer {
         'longitude': location.longitude,
       },
       'deliverStatus': deliverStatus,
+      'customerNumber':customerNumber,
     };
   }
 }

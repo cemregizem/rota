@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rota/components/bottom_navigation_bar.dart';
 import 'package:rota/providers/customer_list_provider.dart';
 
 import 'package:rota/screens/customer_detail_screen.dart';
@@ -25,11 +26,14 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Customer List'),
+        title: const Text('Customer List',style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),),
         centerTitle: true,
       ),
       body: customers.isEmpty
-          ? Center(child:Text('There isnt any customer!'))
+          ? Center(child: Text('There isnt any customer!'))
           : ListView.builder(
               itemCount: customers.length,
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -41,7 +45,8 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => CustomerDetailScreen(customer: customer),
+                        builder: (context) =>
+                            CustomerDetailScreen(customer: customer),
                       ),
                     );
                   },
@@ -49,9 +54,36 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Package Number: ${customer.packageNumber}',
-                          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                        Row(
+                          children: [
+                            Container(
+                              decoration: const BoxDecoration(
+                                shape: BoxShape
+                                    .circle, // Make the container circular
+                                color: Colors.blue, // Add color to the circle
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(
+                                    8.0), // Add padding inside the circle
+                                child: Text(
+                                  '#${customer.customerNumber}', // Sequential number
+
+                                  style: const TextStyle(
+                                      fontSize: 13,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold
+                                      // Text color inside the circle
+                                      ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 5),
+                            Text(
+                              'Package Number: ${customer.packageNumber}',
+                              style: const TextStyle(
+                                  fontSize: 15, fontWeight: FontWeight.bold),
+                            ),
+                          ],
                         ),
                         const SizedBox(height: 8),
                         Row(
@@ -62,10 +94,14 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
                               style: const TextStyle(fontSize: 13),
                             ),
                             Text(
-                              customer.deliverStatus ? 'Delivered ✅' : 'Not Delivered ❌',
+                              customer.deliverStatus
+                                  ? 'Delivered ✅'
+                                  : 'Not Delivered ❌',
                               style: TextStyle(
                                 fontSize: 13,
-                                color: customer.deliverStatus ? Colors.green : Colors.red,
+                                color: customer.deliverStatus
+                                    ? Colors.green
+                                    : Colors.red,
                               ),
                             ),
                           ],
@@ -73,7 +109,8 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
                         const SizedBox(height: 8),
                         Text(
                           'Phone: ${customer.phone}',
-                          style: const TextStyle(fontSize: 13, color: Colors.grey),
+                          style:
+                              const TextStyle(fontSize: 13, color: Colors.grey),
                         ),
                         const SizedBox(height: 8),
                         Text(
@@ -86,6 +123,7 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
                 );
               },
             ),
+      bottomNavigationBar: const CustomBottomNavigationBar(),      
     );
   }
 }

@@ -82,6 +82,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           return null;
                         },
                       ),
+                      
                       const SizedBox(height: 20),
 
                       // Register Button

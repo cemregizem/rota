@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rota/models/customer.dart';
+import 'package:rota/providers/auth_provider.dart';
 import 'package:rota/providers/customer_list_provider.dart';
 import 'package:rota/providers/location_provider.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart';
-import 'package:rota/providers/state_provider.dart';
-import 'package:rota/screens/customer_list_screen.dart';
-import 'package:rota/screens/new_customer_screen.dart';
 import 'package:rota/services/auth_service.dart';
+import 'package:rota/components/bottom_navigation_bar.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({Key? key, required this.customers}) : super(key: key);
@@ -17,11 +14,11 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final locationAsyncValue = ref.watch(locationProvider); //Kullanıcının şuanki lokasyonunu sağlamak için locationProviderı izler
-    final customers = ref.watch(customerListProvider);//müşteri listesi
-    final AuthService _authService = AuthService();
-     
   
+     final AuthService _authService = AuthService();
+
+    // Retrieve the current user
+    final currentUser = ref.read(firebaseAuthProvider).currentUser;
 
     return Scaffold(
       appBar: AppBar(
@@ -37,7 +34,7 @@ class HomeScreen extends ConsumerWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-             onPressed: () async {
+            onPressed: () async {
               // Ensure logout is wrapped in an async function
               await _authService.logout(ref, context);
             },
@@ -45,138 +42,53 @@ class HomeScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body: locationAsyncValue.when(
-        data: (position) {
-          final userLocation = LatLng(position.latitude, position.longitude); //lokasyon elde edilince latitude ve lonitude olarak çevirir
-          // Create markers for each customer
-          final customerMarkers = customers //Her kullanıcı için marker listesi yaratır
-              .map(
-                (customer) => Marker(
-                  point: customer.location,
-                  width: 80.0,
-                  height: 80.0,
-                  builder: (ctx) => const Icon(
-                    Icons.location_pin,
-                    size: 40.0,
-                    color: Colors.green,
-                  ),
-                ),
-              )
-              .toList();
-        
-          return Padding(
+      body: Column(
+        children: [
+          Container(
+            alignment:Alignment.centerLeft,
             padding: const EdgeInsets.all(16.0),
+            margin: const EdgeInsets.all(16.0),
+            decoration: BoxDecoration(
+              color: Colors.grey[200],
+              borderRadius: BorderRadius.circular(12.0),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black12,
+                  
+                ),
+              ],
+            ),
+            child: Text(
+              'Welcome ${currentUser?.email ?? 'User !'}',
+              style: const TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF244D3E),
+              ),
+            ),
+          ),
+          // Add more widgets or content below
+          Expanded(
             child: Column(
               children: [
-                // Map section
-                Expanded(
-                  flex: 3, // Map takes 2/3 of the screen
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12.0),
-                    child: FlutterMap( //fluttermap kullanılarak haritayı gösteririz
-                      options: MapOptions(
-                        center: userLocation,
-                        zoom: 16.0,
-                      ),
-                      children: [
-                        TileLayer(
-                          urlTemplate:
-                              'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                          subdomains: ['a', 'b', 'c'],
-                        ),
-                        MarkerLayer( //kullanıcı ve müşterilerinin yer pinlerini gösteririz
-                          markers: [
-                            Marker(
-                              point: userLocation,
-                              width: 80.0,
-                              height: 80.0,
-                              builder: (ctx) => const Icon(
-                                Icons.location_pin,
-                                size: 40.0,
-                                color: Colors.red,
-                              ),
-                            ),
-
-                            ...customerMarkers // Add all customer markers
-                          ],
-                        ),
-                        if (ref.watch(polylineStateProvider).isNotEmpty) //Eğer bir rota belirlenmişse bu layerda gösterilir
-                          PolylineLayer(
-                            polylines: [
-                              Polyline(
-                                points: ref.watch(
-                                    polylineStateProvider), // Use the state directly
-                                strokeWidth: 4.0,
-                                color: Colors.blue,
-                              ),
-                            ],
-                          ),
-                      ],
-                    ),
+                 Container(
+                  child: const Text(
+                    'Packages count:',
+                    style: TextStyle(fontSize: 16.0),
                   ),
                 ),
-                const SizedBox(height: 30.0), 
-
-                // Button section
-                Expanded(
-                  flex: 1, // Buttons take 1/3 of the screen
-                  child: Column(
-                    
-                    children: [
-                      ElevatedButton.icon(
-                        onPressed: () {
-                         
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const CustomerListScreen(),
-                            ),
-                          );
-                        },
-                        icon: const Icon(Icons.list),
-                        label: const Text('Customer List'),
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(double.infinity, 50),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 10.0),
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const CustomerScreen(),
-                            ),
-                          );
-                        },
-                        icon: const Icon(Icons.person_add),
-                        label: const Text('Add New Customer'),
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(double.infinity, 50),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                      ),
-                    ],
+                Container(
+                  child: const Text(
+                    'Delivered package count:',
+                    style: TextStyle(fontSize: 16.0),
                   ),
                 ),
               ],
             ),
-          );
-        },
-        loading: () => const Center(child: CircularProgressIndicator()), //loading spinner gösterilir lokasyon yüklenirken
-        error: (error, stack) {
-          debugPrint('Error occurred: $error');
-          debugPrint('Stack trace: $stack');
-
-          return Center(child: Text('Error: $error'));
-        },
+          ),
+        ],
       ),
+      bottomNavigationBar: const CustomBottomNavigationBar(),
     );
   }
 }

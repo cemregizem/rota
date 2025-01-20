@@ -21,9 +21,9 @@ final routeProvider = FutureProvider.family<List<LatLng>, Map<String, LatLng>>(
    
 
       if (response.statusCode == 200) {
-        log('API Response: Success45345sdasdasdas3');
-        print('gfefefef');
-        //print('API Response: Success');
+        log('API Response: Success3');
+      
+        print('API Response: Success');
         final data = json.decode(response.body);
         //response data features array içerir ve her feature rotanın koordinantlarını içerir
         if (data['features'] != null &&

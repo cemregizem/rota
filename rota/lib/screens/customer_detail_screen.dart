@@ -72,6 +72,8 @@ class CustomerDetailScreen extends ConsumerWidget {
 
                             // Butonun güncellenmesi için
                             await Future.delayed(const Duration(seconds: 2));
+
+                            
                             Navigator.pop(context);
                           },
                           label: customer.deliverStatus
