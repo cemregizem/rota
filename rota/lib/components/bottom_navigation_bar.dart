@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rota/providers/user_provider.dart';
 import 'package:rota/screens/customer_list_screen.dart';
 import 'package:rota/screens/map_screen.dart';
 import 'package:rota/screens/new_customer_screen.dart';
@@ -13,7 +14,7 @@ class CustomBottomNavigationBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentIndex = ref.watch(currentIndexProvider);
-
+   
     return BottomNavigationBar(
       currentIndex: currentIndex,
       onTap: (index) {
@@ -23,7 +24,7 @@ class CustomBottomNavigationBar extends ConsumerWidget {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => const HomeScreen(customers: []),
+                builder: (context) => const HomeScreen(),
               ),
             );
             break;

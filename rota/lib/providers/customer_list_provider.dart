@@ -16,7 +16,7 @@ class CustomerListNotifier extends StateNotifier<List<Customer>> {
     if (user == null) {
       return;
     }
-    final database = FirebaseDatabase.instance.ref('customers/${user.uid}');
+    final database = FirebaseDatabase.instance.ref('rotaData/${user.uid}/customers');
 
     // Listen for changes in the 'customers' node
     database.onValue.listen((event) {
@@ -34,7 +34,8 @@ class CustomerListNotifier extends StateNotifier<List<Customer>> {
             print('Skipping invalid customer data: $value');
           }
         });
-
+          // Sort customers by `customerNumber` in ascending order
+        customers.sort((a, b) => a.customerNumber.compareTo(b.customerNumber));
         state = customers; // Update the state with the fetched customer list
       } else {
         print('Customers data is not a valid map: $customersData');

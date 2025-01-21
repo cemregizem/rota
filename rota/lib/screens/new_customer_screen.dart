@@ -4,7 +4,9 @@ import 'package:latlong2/latlong.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:rota/components/bottom_navigation_bar.dart';
 import 'package:rota/providers/customer_provider.dart';
+import 'package:rota/providers/user_provider.dart';
 import 'package:rota/screens/location_selection_screen.dart';
+import 'package:rota/screens/map_screen.dart';
 
 class CustomerScreen extends ConsumerStatefulWidget {
   const CustomerScreen({Key? key}) : super(key: key);
@@ -24,17 +26,19 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
     _addressController = TextEditingController(); // Initialize controller
   }
 
-
   @override
   Widget build(BuildContext context) {
     final customerData = ref.watch(customerProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('New Customer',style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                  ),),
+        title: const Text(
+          'New Customer',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -60,7 +64,9 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
                     labelText: 'Package Number',
                     border: OutlineInputBorder(),
                   ),
-                  onChanged: (value) => ref.read(customerProvider.notifier) //müşteri verisini güncellenir.
+                  onChanged: (value) => ref
+                      .read(customerProvider
+                          .notifier) //müşteri verisini güncellenir.
                       .updateField('packageNumber', value),
                   validator: (value) => value == null || value.isEmpty
                       ? 'Please enter a package number'
@@ -120,7 +126,7 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
                     labelText: 'Select Location for address',
                     border: OutlineInputBorder(),
                   ),
-                  controller:_addressController,
+                  controller: _addressController,
                   readOnly: true, // Make the field read-only
                 ),
                 const SizedBox(height: 16),
@@ -148,11 +154,12 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
                           final place = placemarks.first;
                           final formattedAddress =
                               '${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.country}';
-                            //Alnınan yer bilgileri bu formatta birleştirilir.
-                          ref.read(customerProvider.notifier)
-                              .updateField('address', formattedAddress); 
-                              //Alınan yer bilgileri customerProvider a kaydedilir
-                              _addressController.text = formattedAddress;
+                          //Alnınan yer bilgileri bu formatta birleştirilir.
+                          ref
+                              .read(customerProvider.notifier)
+                              .updateField('address', formattedAddress);
+                          //Alınan yer bilgileri customerProvider a kaydedilir
+                          _addressController.text = formattedAddress;
                         } else {
                           throw Exception('No placemarks found.');
                         }
@@ -182,14 +189,23 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
                       await ref
                           .read(customerProvider.notifier)
                           .saveToFirebase();
+
+                      await ref
+                          .read(userProvider.notifier)
+                          .incrementPackageCount();
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                             content: Text('Customer added successfully!')),
                       );
-                      
+
                       _addressController.clear(); // Clear address field
-                    
-                      Navigator.pop(context);
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const MapScreen(customers: []),
+                        ),
+                      );
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(

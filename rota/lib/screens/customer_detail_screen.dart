@@ -8,7 +8,9 @@ import 'package:rota/components/elevated_button.dart';
 import 'package:rota/providers/location_provider.dart';
 import 'package:rota/providers/route_provider.dart';
 import 'package:rota/providers/state_provider.dart';
+import 'package:rota/providers/user_provider.dart';
 import 'package:rota/screens/home.dart';
+import 'package:rota/screens/map_screen.dart';
 
 class CustomerDetailScreen extends ConsumerWidget {
   final Customer customer;
@@ -18,7 +20,6 @@ class CustomerDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
- 
     return Scaffold(
       appBar: AppBar(title: const Text('Customer Details')),
       body: Padding(
@@ -63,17 +64,18 @@ class CustomerDetailScreen extends ConsumerWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                       
                         CommonElevatedButton(
                           onPressed: () async {
                             // provider kullanarak deliverystatusu güncellemek için asenkron işlem yapılır
                             await ref.read(
                                 customerDeliverStatusProvider(customer).future);
 
+                            await ref
+                                .read(userProvider.notifier)
+                                .incrementDeliveredPackageCount();
                             // Butonun güncellenmesi için
                             await Future.delayed(const Duration(seconds: 2));
 
-                            
                             Navigator.pop(context);
                           },
                           label: customer.deliverStatus
@@ -81,17 +83,17 @@ class CustomerDetailScreen extends ConsumerWidget {
                               : 'Mark as Delivered',
                           isDelivered: customer.deliverStatus,
                         ),
-                        const SizedBox(width: 16), 
-                       
+                        const SizedBox(width: 16),
                         CommonElevatedButton(
                           onPressed: () async {
                             final position =
                                 await ref.read(locationProvider.future);
-                            final userLocation =
-                                LatLng(position.latitude, position.longitude);//kullanıcı lokasyonu
-                            final customerLocation = customer.location;//müşteri lokasyonu
+                            final userLocation = LatLng(position.latitude,
+                                position.longitude); //kullanıcı lokasyonu
+                            final customerLocation =
+                                customer.location; //müşteri lokasyonu
 
-                            try { 
+                            try {
                               // Rota oluşturulur
                               final polyline = await ref.read(routeProvider({
                                 'userLocation': userLocation,
@@ -99,15 +101,15 @@ class CustomerDetailScreen extends ConsumerWidget {
                               }).future);
 
                               // Update the polyline state
-                              ref.read(polylineStateProvider.notifier).updatePolyline(polyline);
+                              ref
+                                  .read(polylineStateProvider.notifier)
+                                  .updatePolyline(polyline);
 
                               // Navigate back to Home Screen
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const HomeScreen(
-                                    customers: [],
-                                  ),
+                                  builder: (context) => const MapScreen(customers: [],),
                                 ),
                               );
                             } catch (e) {

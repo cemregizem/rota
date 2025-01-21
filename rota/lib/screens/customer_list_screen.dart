@@ -60,7 +60,7 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
                               decoration: const BoxDecoration(
                                 shape: BoxShape
                                     .circle, // Make the container circular
-                                color: Colors.blue, // Add color to the circle
+                                color: Color(0xFFDC2A34),// Add color to the circle
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.all(
