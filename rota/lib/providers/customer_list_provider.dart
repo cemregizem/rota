@@ -34,7 +34,8 @@ class CustomerListNotifier extends StateNotifier<List<Customer>> {
             print('Skipping invalid customer data: $value');
           }
         });
-
+          // Sort customers by `customerNumber` in ascending order
+        customers.sort((a, b) => a.customerNumber.compareTo(b.customerNumber));
         state = customers; // Update the state with the fetched customer list
       } else {
         print('Customers data is not a valid map: $customersData');

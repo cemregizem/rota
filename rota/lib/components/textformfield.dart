@@ -5,7 +5,7 @@ class CommonTextFormField extends StatelessWidget {
   final String? initialValue;
   final Function(String) onChanged;
   final String? Function(String?)? validator;
-  final bool obscureText; // Add this line to handle obscureText
+  final bool obscureText; 
 
   const CommonTextFormField({
     Key? key,
@@ -13,7 +13,7 @@ class CommonTextFormField extends StatelessWidget {
     this.initialValue,
     required this.onChanged,
     this.validator,
-    this.obscureText = false, // Default to false if not provided
+    this.obscureText = false, 
   }) : super(key: key);
 
   @override
@@ -24,7 +24,7 @@ class CommonTextFormField extends StatelessWidget {
         labelText: label,
         border: OutlineInputBorder(),
       ),
-      obscureText: obscureText, // Use the obscureText parameter
+      obscureText: obscureText, 
       onChanged: onChanged,
       validator: validator,
     );

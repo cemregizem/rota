@@ -10,7 +10,7 @@ class LocationSelectorScreen extends StatefulWidget {
 }
 
 class _LocationSelectorScreenState extends State<LocationSelectorScreen> {
-  LatLng selectedLocation = LatLng(51.5, -0.09);
+  LatLng selectedLocation = LatLng(38.457891491766354, 27.21305095847274);
 
   @override
   Widget build(BuildContext context) {

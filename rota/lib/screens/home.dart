@@ -71,7 +71,7 @@ class HomeScreen extends ConsumerWidget {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Plaka: ${user?.licensePlate ?? ''}',
+                    'License Plate: ${user?.licensePlate ?? ''}',
                     style: const TextStyle(
                       fontSize: 15.0,
                       fontWeight: FontWeight.bold,
@@ -83,7 +83,7 @@ class HomeScreen extends ConsumerWidget {
                  Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Package Count:',
+                    'Package Count: ${user?.packageCount ?? ''}',
                     style: const TextStyle(
                       fontSize: 15.0,
                       fontWeight: FontWeight.bold,
@@ -95,7 +95,7 @@ class HomeScreen extends ConsumerWidget {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Delivered Package Count:',
+                    'Delivered Package Count: ${user?.deliveredPackageCount ?? ''}',
                     style: const TextStyle(
                       fontSize: 15.0,
                       fontWeight: FontWeight.bold,
