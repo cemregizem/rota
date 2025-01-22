@@ -6,6 +6,8 @@ This project is an application where couriers can create accounts and log in. It
 - `latlong2`
 - `geocoding`
 - `http`
+- `flutter_lints`
+- `firebase_auth`
 
 The application is currently developed for iOS devices and has been tested up to iOS 17.
 
@@ -19,14 +21,20 @@ The application is currently developed for iOS devices and has been tested up to
 
 ## ScreenShots
 <div style="display: flex; justify-content: space-between;">
-  <img src="https://github.com/user-attachments/assets/97c08af4-25c3-493b-acc9-adb2dd87ea24" width="30%" />
-  <img src="https://github.com/user-attachments/assets/c43f5b0d-2ce8-4094-b2a3-87b041455961" width="30%" />
-  <img src="https://github.com/user-attachments/assets/bce60611-13ab-48e8-9921-9878f77adf07" width="30%" />
+  <img src="https://github.com/user-attachments/assets/ca7eae32-6a14-417d-9b6e-81ddfa344696" width="30%" />
+  <img src="https://github.com/user-attachments/assets/378e4f86-0f32-46dc-b939-bd558a53626f" width="30%" />
+  <img src="https://github.com/user-attachments/assets/a0f5cfc3-6387-4759-834d-2695f3f9e28e" width="30%" />
 </div>
 
 <div style="display: flex; justify-content: space-between;">
-  <img src="https://github.com/user-attachments/assets/934bcd44-cc7d-4b08-a083-565f1701ab76" width="30%" />
-  <img src="https://github.com/user-attachments/assets/10582f8b-327d-484e-9deb-c3a918a7a185" width="30%" />
-  <img src="https://github.com/user-attachments/assets/0bdae79e-b259-4841-b072-969299e6ef4b" width="30%" />
-</div>
+  <img src="https://github.com/user-attachments/assets/89576f14-0f24-4d51-9d61-6969d152165e" width="30%" />
+  <img src="https://github.com/user-attachments/assets/cc4e05b4-3bbb-4d88-a5e2-cba8035b9f26" width="30%" />
+  <img src="https://github.com/user-attachments/assets/860d9213-4ce9-4c31-870c-c105b907d190" width="30%" />
+</div>!
+
+<div style="display: flex; justify-content: space-between;">
+  <img src="https://github.com/user-attachments/assets/f9536630-156d-4df5-86e6-bedcd38a899b" width="30%" />
+</div>!
+
+
 
