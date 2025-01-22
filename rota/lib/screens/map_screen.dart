@@ -11,9 +11,8 @@ import 'package:rota/screens/customer_detail_screen.dart';
 import 'package:rota/services/route_service.dart';
 import 'package:rota/components/bottom_navigation_bar.dart';
 
-
 class MapScreen extends ConsumerWidget {
-  const MapScreen({Key? key, required this.customers}) : super(key: key);
+  const MapScreen({super.key, required this.customers});
   //List<Consumer> parametre olarak alırız.Map üzerinde göstereceğimiz için
   final List<Customer> customers;
 
@@ -22,19 +21,17 @@ class MapScreen extends ConsumerWidget {
     final locationAsyncValue = ref.watch(
         locationProvider); //Kullanıcının şuanki lokasyonunu sağlamak için locationProviderı izler
     final customers = ref.watch(customerListProvider); //müşteri listesi
-    
 
     return Scaffold(
       appBar: AppBar(
         title: const Text(
           'Routes Map',
           style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                  ),
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         centerTitle: true,
-     
       ),
       body: locationAsyncValue.when(
         data: (position) {
@@ -99,7 +96,7 @@ class MapScreen extends ConsumerWidget {
                         TileLayer(
                           urlTemplate:
                               'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                          subdomains: ['a', 'b', 'c'],
+                          subdomains: const ['a', 'b', 'c'],
                         ),
                         if (ref
                             .watch(polylineStateProvider)
@@ -140,7 +137,6 @@ class MapScreen extends ConsumerWidget {
 
                 // Button section
                 Expanded(
-                  flex: 1, // Buttons take 1/3 of the screen
                   child: Column(
                     children: [
                       ElevatedButton.icon(
@@ -172,48 +168,10 @@ class MapScreen extends ConsumerWidget {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           backgroundColor: ref.watch(routeStatusProvider)
-                              ? Colors.red
+                              ? const Color(0xFFDC2A34)
                               : Colors.green,
                         ),
                       ),
-                    /*  const SizedBox(height: 10.0),
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const CustomerListScreen(),
-                            ),
-                          );
-                        },
-                        icon: const Icon(Icons.list),
-                        label: const Text('Customer List'),
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(double.infinity, 50),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 10.0),
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const CustomerScreen(),
-                            ),
-                          );
-                        },
-                        icon: const Icon(Icons.person_add),
-                        label: const Text('Add New Customer'),
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(double.infinity, 50),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                      ), */
                     ],
                   ),
                 ),

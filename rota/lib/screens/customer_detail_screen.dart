@@ -9,14 +9,12 @@ import 'package:rota/providers/location_provider.dart';
 import 'package:rota/providers/route_provider.dart';
 import 'package:rota/providers/state_provider.dart';
 import 'package:rota/providers/user_provider.dart';
-import 'package:rota/screens/home.dart';
 import 'package:rota/screens/map_screen.dart';
 
 class CustomerDetailScreen extends ConsumerWidget {
   final Customer customer;
 
-  const CustomerDetailScreen({Key? key, required this.customer})
-      : super(key: key);
+  const CustomerDetailScreen({super.key, required this.customer});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -75,8 +73,9 @@ class CustomerDetailScreen extends ConsumerWidget {
                                 .incrementDeliveredPackageCount();
                             // Butonun güncellenmesi için
                             await Future.delayed(const Duration(seconds: 2));
-
-                            Navigator.pop(context);
+                            if (context.mounted) {
+                              Navigator.pop(context);
+                            }
                           },
                           label: customer.deliverStatus
                               ? 'Delivered'
@@ -104,20 +103,26 @@ class CustomerDetailScreen extends ConsumerWidget {
                               ref
                                   .read(polylineStateProvider.notifier)
                                   .updatePolyline(polyline);
-
-                              // Navigate back to Home Screen
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const MapScreen(customers: [],),
-                                ),
-                              );
+                              if (context.mounted) {
+                                // Navigate back to Home Screen
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const MapScreen(
+                                      customers: [],
+                                    ),
+                                  ),
+                                );
+                              }
                             } catch (e) {
                               // Handle error
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                    content: Text('Error creating route: $e')),
-                              );
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content:
+                                          Text('Error creating route: $e')),
+                                );
+                              }
                             }
                           },
                           label: 'Create Route',

@@ -7,7 +7,7 @@ import 'package:rota/screens/customer_detail_screen.dart';
 import 'package:rota/components/card.dart';
 
 class CustomerListScreen extends ConsumerStatefulWidget {
-  const CustomerListScreen({Key? key}) : super(key: key);
+  const CustomerListScreen({super.key});
 
   @override
   ConsumerState<CustomerListScreen> createState() => _CustomerListScreenState();
@@ -26,14 +26,17 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Customer List',style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                  ),),
+        title: const Text(
+          'Customer List',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         centerTitle: true,
       ),
       body: customers.isEmpty
-          ? Center(child: Text('There isnt any customer!'))
+          ? const Center(child: Text('There isnt any customer!'))
           : ListView.builder(
               itemCount: customers.length,
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -60,7 +63,8 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
                               decoration: const BoxDecoration(
                                 shape: BoxShape
                                     .circle, // Make the container circular
-                                color: Color(0xFFDC2A34),// Add color to the circle
+                                color: Color(
+                                    0xFFDC2A34), // Add color to the circle
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.all(
@@ -101,7 +105,7 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
                                 fontSize: 13,
                                 color: customer.deliverStatus
                                     ? Colors.green
-                                    : Colors.red,
+                                    : const Color(0xFFDC2A34),
                               ),
                             ),
                           ],
@@ -123,7 +127,7 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
                 );
               },
             ),
-      bottomNavigationBar: const CustomBottomNavigationBar(),      
+      bottomNavigationBar: const CustomBottomNavigationBar(),
     );
   }
 }

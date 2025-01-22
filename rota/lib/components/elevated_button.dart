@@ -6,18 +6,18 @@ class CommonElevatedButton extends StatelessWidget {
   final String label;
   final bool isDelivered;
   const CommonElevatedButton({
-    Key? key,
+    super.key,
     required this.onPressed,
     required this.label,
     required this.isDelivered,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: onPressed,
       style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all(
+        backgroundColor: WidgetStateProperty.all(
           isDelivered ? Colors.green : Colors.blue,
         ),
       ),

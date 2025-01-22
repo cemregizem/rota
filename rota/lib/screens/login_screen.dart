@@ -38,7 +38,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 32, vertical: 40),
                 width: double.infinity,
-                constraints: BoxConstraints(maxWidth: 400),
+                constraints: const BoxConstraints(maxWidth: 400),
                 child: Form(
                   key: _formKey,
                   child: Column(
@@ -87,7 +87,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => RegisterScreen()),
+                      MaterialPageRoute(builder: (context) => const RegisterScreen()),
                     );
                   },
                   child: const Text(

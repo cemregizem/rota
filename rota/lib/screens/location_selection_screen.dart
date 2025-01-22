@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+
 //Kullanıcının adres için haritadan lokasyon seçtiği ekran
 class LocationSelectorScreen extends StatefulWidget {
   const LocationSelectorScreen({super.key});
 
   @override
-  _LocationSelectorScreenState createState() => _LocationSelectorScreenState();
+  LocationSelectorScreenState createState() => LocationSelectorScreenState();
 }
 
-class _LocationSelectorScreenState extends State<LocationSelectorScreen> {
+class LocationSelectorScreenState extends State<LocationSelectorScreen> {
   LatLng selectedLocation = LatLng(38.457891491766354, 27.21305095847274);
 
   @override
@@ -29,7 +30,7 @@ class _LocationSelectorScreenState extends State<LocationSelectorScreen> {
         children: [
           TileLayer(
             urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-            subdomains: ['a', 'b', 'c'],
+            subdomains: const ['a', 'b', 'c'],
           ),
           MarkerLayer(
             markers: [

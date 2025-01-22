@@ -16,13 +16,14 @@ class CustomerListNotifier extends StateNotifier<List<Customer>> {
     if (user == null) {
       return;
     }
+    //firebase te giriş yapmış user ın customer verilerine ulaşırız
     final database = FirebaseDatabase.instance.ref('rotaData/${user.uid}/customers');
 
-    // Listen for changes in the 'customers' node
+    // databaseteki customer verileri dinlenir ve bi değişiklikte tetiklenir.
     database.onValue.listen((event) {
       final customersData = event.snapshot.value;
 
-      if (customersData is Map<dynamic, dynamic>) {
+      if (customersData is Map<dynamic, dynamic>) { //alınan veriler map tipinde mi 
         final List<Customer> customers = [];
 
         customersData.forEach((key, value) {
@@ -34,7 +35,7 @@ class CustomerListNotifier extends StateNotifier<List<Customer>> {
             print('Skipping invalid customer data: $value');
           }
         });
-          // Sort customers by `customerNumber` in ascending order
+          // Sort customers ascending order
         customers.sort((a, b) => a.customerNumber.compareTo(b.customerNumber));
         state = customers; // Update the state with the fetched customer list
       } else {
@@ -45,7 +46,7 @@ class CustomerListNotifier extends StateNotifier<List<Customer>> {
     });
   }
 
-  // Clear the customer list (called when user logs out)
+  // Clear the customer list 
   void clearCustomers() {
     state = [];
   }
