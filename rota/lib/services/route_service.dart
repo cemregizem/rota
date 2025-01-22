@@ -59,13 +59,13 @@ Future<void> createRoute(BuildContext context, WidgetRef ref) async {
 }
 
 void cancelRoute(BuildContext context, WidgetRef ref) {
-  // Clear the polyline
+  // clear polylinee
   ref.read(polylineStateProvider.notifier).updatePolyline([]);
 
-  // Update the route status to inactive
+  //update route status
   ref.read(routeStatusProvider.notifier).cancelRoute();
 
-  // Show a confirmation message
+
   ScaffoldMessenger.of(context).showSnackBar(
     const SnackBar(content: Text('Route canceled.')),
   );

@@ -15,15 +15,14 @@ final customerDeliverStatusProvider =
     throw 'User not logged in';
   }
 
-  // Update the deliverStatus in Firebase
-  final database =
-      FirebaseDatabase.instance.ref('rotaData/${user.uid}/customers/${customer.id}');
+  // Update the deliverStatus in firebase real time database
+  final database = FirebaseDatabase.instance
+      .ref('rotaData/${user.uid}/customers/${customer.id}');
 
   await database.update({
     'deliverStatus': newStatus,
   });
 
-  // Optionally, you could trigger a re-fetch or update locally here.
-  // This will fetch the customer list again and update the UI.
+  // fetch the customer list and update screen
   await ref.read(customerListProvider.notifier).fetchCustomers();
 });
