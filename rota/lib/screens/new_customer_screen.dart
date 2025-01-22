@@ -9,8 +9,9 @@ import 'package:rota/screens/location_selection_screen.dart';
 import 'package:rota/screens/map_screen.dart';
 
 class CustomerScreen extends ConsumerStatefulWidget {
-  const CustomerScreen({Key? key}) : super(key: key);
-
+  const CustomerScreen({super.key});
+//const CustomerScreen({Key? key}) : super(key: key); yerine super kullanabiliriz.
+//key'i constructor içinde ayrı olarak initialize etmeye gerek kalmaz.
   @override
   ConsumerState<CustomerScreen> createState() => _CustomerScreenState();
 }
@@ -164,9 +165,12 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
                           throw Exception('No placemarks found.');
                         }
                       } catch (e) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Failed to get address: $e')),
-                        );
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content: Text('Failed to get address: $e')),
+                          );
+                        }
                       }
                     }
                   },
@@ -193,19 +197,23 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
                       await ref
                           .read(userProvider.notifier)
                           .incrementPackageCount();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text('Customer added successfully!')),
-                      );
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Customer added successfully!')),
+                        );
+                      }
 
                       _addressController.clear(); // Clear address field
-
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const MapScreen(customers: []),
-                        ),
-                      );
+                      if (context.mounted) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                const MapScreen(customers: []),
+                          ),
+                        );
+                      }
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
@@ -213,13 +221,13 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
                       );
                     }
                   },
-                  child: const Text('Add Customer'),
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size(double.infinity, 50),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
+                  child: const Text('Add Customer'),
                 ),
               ],
             ),

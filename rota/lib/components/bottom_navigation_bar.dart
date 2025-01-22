@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rota/providers/user_provider.dart';
 import 'package:rota/screens/customer_list_screen.dart';
 import 'package:rota/screens/map_screen.dart';
 import 'package:rota/screens/new_customer_screen.dart';
@@ -9,12 +8,12 @@ import 'package:rota/screens/home.dart';
 final currentIndexProvider = StateProvider<int>((ref) => 0);
 
 class CustomBottomNavigationBar extends ConsumerWidget {
-  const CustomBottomNavigationBar({Key? key}) : super(key: key);
+  const CustomBottomNavigationBar({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentIndex = ref.watch(currentIndexProvider);
-   
+
     return BottomNavigationBar(
       currentIndex: currentIndex,
       onTap: (index) {
@@ -52,7 +51,6 @@ class CustomBottomNavigationBar extends ConsumerWidget {
               ),
             );
             break;
-          
         }
       },
       items: [
@@ -74,7 +72,6 @@ class CustomBottomNavigationBar extends ConsumerWidget {
               : const Icon(Icons.list_outlined, color: Colors.white),
           label: 'Customer List',
         ),
-        
         BottomNavigationBarItem(
           icon: currentIndex == 3
               ? const Icon(Icons.person_add_alt_1, color: Colors.white)

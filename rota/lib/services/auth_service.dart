@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rota/providers/auth_provider.dart';
-import 'package:rota/providers/customer_list_provider.dart';
 import 'package:rota/providers/customer_provider.dart';
 import 'package:rota/providers/package_provider.dart';
 import 'package:rota/providers/state_provider.dart';
@@ -20,26 +19,27 @@ class AuthService {
       if (userId != null) {
         await ref.read(userProvider.notifier).fetchUserData(userId);
       }
-
-      // Get the customer list
-      final customers = ref.read(customerListProvider);
-      // Navigate to the HomeScreen
-      final user = ref.read(userProvider);
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ProviderScope(
-            overrides: [
-              userEmailProvider.overrideWithValue(email),
-            ],
-            child: HomeScreen(),
+      if (context.mounted) {
+        //Buildcontext zamanlamaya duyarlıdır.Asenkron işlemlerden sonra build
+        Navigator.pushReplacement(
+          //context in hala geçerli olup olmadıgını kontrol etmek için context.mounted kullanılır.
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProviderScope(
+              overrides: [
+                userEmailProvider.overrideWithValue(email),
+              ],
+              child: const HomeScreen(),
+            ),
           ),
-        ),
-      );
+        );
+      }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString())),
-      );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.toString())),
+        );
+      }
     }
   }
 
@@ -55,17 +55,20 @@ class AuthService {
       ref
           .read(customerProvider.notifier)
           .clearCustomerData(); // Müşteri verilerini sıfırlama
-
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const LoginScreen(),
-        ),
-      );
+      if (context.mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const LoginScreen(),
+          ),
+        );
+      }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Logout failed: $e')),
-      );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Logout failed: $e')),
+        );
+      }
     }
   }
 
@@ -82,17 +85,23 @@ class AuthService {
       await ref
           .read(authControllerProvider)
           .signUp(email, password, name, surname, licensePlate);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Registration Successful!')),
-      );
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const LoginScreen()),
-      );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Registration Successful!')),
+        );
+      }
+      if (context.mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const LoginScreen()),
+        );
+      }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      }
     }
   }
 }

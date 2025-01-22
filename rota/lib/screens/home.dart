@@ -6,14 +6,12 @@ import 'package:rota/components/bottom_navigation_bar.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({
-    Key? key,
-    
-  }) : super(key: key);
- 
-  
+    super.key,
+  });
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AuthService _authService = AuthService();
+    final AuthService authService = AuthService();
     final user = ref.watch(userProvider); // Fetch user from the provider
 
     return Scaffold(
@@ -32,7 +30,7 @@ class HomeScreen extends ConsumerWidget {
             icon: const Icon(Icons.logout),
             onPressed: () async {
               // Ensure logout is wrapped in an async function
-              await _authService.logout(ref, context);
+              await authService.logout(ref, context);
             },
             tooltip: 'Logout',
           ),
@@ -40,7 +38,7 @@ class HomeScreen extends ConsumerWidget {
       ),
       body: Column(
         children: [
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Container(
             alignment: Alignment.center,
             padding: const EdgeInsets.all(16.0),
@@ -48,7 +46,7 @@ class HomeScreen extends ConsumerWidget {
             decoration: BoxDecoration(
               color: Colors.grey[200],
               borderRadius: BorderRadius.circular(12.0),
-              boxShadow: [
+              boxShadow: const [
                 BoxShadow(
                   color: Colors.black12,
                 ),
@@ -67,7 +65,7 @@ class HomeScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
-                SizedBox(height: 5),
+                const SizedBox(height: 5),
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
@@ -79,8 +77,8 @@ class HomeScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
-                SizedBox(height: 5),
-                 Align(
+                const SizedBox(height: 5),
+                Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
                     'Package Count: ${user?.packageCount ?? ''}',
@@ -91,7 +89,7 @@ class HomeScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
-                SizedBox(height: 5),
+                const SizedBox(height: 5),
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
@@ -107,7 +105,6 @@ class HomeScreen extends ConsumerWidget {
             ),
           ),
           // Add more widgets or content below
-         
         ],
       ),
       bottomNavigationBar: const CustomBottomNavigationBar(),

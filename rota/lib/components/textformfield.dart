@@ -5,16 +5,16 @@ class CommonTextFormField extends StatelessWidget {
   final String? initialValue;
   final Function(String) onChanged;
   final String? Function(String?)? validator;
-  final bool obscureText; 
+  final bool obscureText;
 
   const CommonTextFormField({
-    Key? key,
+    super.key,
     required this.label,
     this.initialValue,
     required this.onChanged,
     this.validator,
-    this.obscureText = false, 
-  }) : super(key: key);
+    this.obscureText = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -22,9 +22,9 @@ class CommonTextFormField extends StatelessWidget {
       initialValue: initialValue,
       decoration: InputDecoration(
         labelText: label,
-        border: OutlineInputBorder(),
+        border: const OutlineInputBorder(),
       ),
-      obscureText: obscureText, 
+      obscureText: obscureText,
       onChanged: onChanged,
       validator: validator,
     );

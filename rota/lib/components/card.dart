@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 // Reusable Card Widget
 class CommonCard extends StatelessWidget {
   final Widget child;
-  const CommonCard({Key? key, required this.child}) : super(key: key);
+  const CommonCard({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {

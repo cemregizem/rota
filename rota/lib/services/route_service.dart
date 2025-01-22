@@ -41,18 +41,21 @@ Future<void> createRoute(BuildContext context, WidgetRef ref) async {
       allCoordinates.addAll(segment); // Add segment points
     } catch (e) {
       debugPrint('Error fetching route: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to fetch route for segment $i')),
-      );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to fetch route for segment $i')),
+        );
+      }
     }
   }
 
   // Update the polyline state
   ref.read(polylineStateProvider.notifier).updatePolyline(allCoordinates);
-
-  ScaffoldMessenger.of(context).showSnackBar(
-    const SnackBar(content: Text('Route created successfully.')),
-  );
+  if (context.mounted) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Route created successfully.')),
+    );
+  }
 }
 
 void cancelRoute(BuildContext context, WidgetRef ref) {
