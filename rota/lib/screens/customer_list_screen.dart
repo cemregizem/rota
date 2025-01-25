@@ -70,7 +70,7 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
                                 padding: const EdgeInsets.all(
                                     8.0), // Add padding inside the circle
                                 child: Text(
-                                  '#${customer.customerNumber}', // Sequential number
+                                  '${customer.customerNumber}', // Sequential number
 
                                   style: const TextStyle(
                                       fontSize: 13,
@@ -85,7 +85,7 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
                             Text(
                               'Package Number: ${customer.packageNumber}',
                               style: const TextStyle(
-                                  fontSize: 15, fontWeight: FontWeight.bold),
+                                  fontSize: 16, fontWeight: FontWeight.bold),
                             ),
                           ],
                         ),
@@ -95,14 +95,14 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
                           children: [
                             Text(
                               '${customer.name} ${customer.surname}',
-                              style: const TextStyle(fontSize: 13),
+                              style: const TextStyle(fontSize: 15),
                             ),
                             Text(
                               customer.deliverStatus
                                   ? 'Delivered ✅'
                                   : 'Not Delivered ❌',
                               style: TextStyle(
-                                fontSize: 13,
+                                fontSize: 15,
                                 color: customer.deliverStatus
                                     ? Colors.green
                                     : const Color(0xFFDC2A34),
@@ -114,12 +114,12 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
                         Text(
                           'Phone: ${customer.phone}',
                           style:
-                              const TextStyle(fontSize: 13, color: Colors.grey),
+                              const TextStyle(fontSize: 15, color: Colors.grey),
                         ),
                         const SizedBox(height: 8),
                         Text(
                           'Address: ${customer.address}',
-                          style: const TextStyle(fontSize: 13),
+                          style: const TextStyle(fontSize: 15),
                         ),
                       ],
                     ),

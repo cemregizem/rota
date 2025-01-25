@@ -40,8 +40,18 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               ),
               const SizedBox(height: 30),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 32, vertical: 40),
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 10,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
+                ),
                 width: double.infinity,
                 constraints: const BoxConstraints(maxWidth: 400),
                 child: Form(
@@ -54,7 +64,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         decoration: const InputDecoration(
                           labelText: 'Email',
                           prefixIcon: Icon(Icons.email),
-                          border: OutlineInputBorder(),
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -74,7 +83,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         decoration: const InputDecoration(
                           labelText: 'Password',
                           prefixIcon: Icon(Icons.lock),
-                          border: OutlineInputBorder(),
                         ),
                         obscureText: true,
                         validator: (value) {
@@ -93,7 +101,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         decoration: const InputDecoration(
                           labelText: 'name',
                           prefixIcon: Icon(Icons.person),
-                          border: OutlineInputBorder(),
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -108,7 +115,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         decoration: const InputDecoration(
                           labelText: 'surname',
                           prefixIcon: Icon(Icons.credit_card_rounded),
-                          border: OutlineInputBorder(),
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -123,7 +129,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         decoration: const InputDecoration(
                           labelText: 'license plate',
                           prefixIcon: Icon(Icons.car_rental),
-                          border: OutlineInputBorder(),
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -155,7 +160,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          backgroundColor: const Color(0xFFDC2A34),
+                          backgroundColor: const Color(0xFF244D3E),
                         ),
                         child: const Text(
                           'Register',

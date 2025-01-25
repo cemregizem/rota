@@ -58,7 +58,6 @@ class CustomerDetailScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: 20),
                   Align(
-                    alignment: Alignment.center,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
