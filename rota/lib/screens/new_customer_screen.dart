@@ -32,6 +32,7 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
     final customerData = ref.watch(customerProvider);
 
     return Scaffold(
+      
       appBar: AppBar(
         title: const Text(
           'New Customer',
@@ -43,8 +44,22 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          margin:const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black26,
+                blurRadius: 10,
+                offset: Offset(0, 4),
+              ),
+            ],
+          ),
+          width: double.infinity,
+          constraints: const BoxConstraints(maxWidth: 400),
           child: Form(
             key: _formKey,
             child: Column(
@@ -63,7 +78,6 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
                 TextFormField(
                   decoration: const InputDecoration(
                     labelText: 'Package Number',
-                    border: OutlineInputBorder(),
                   ),
                   onChanged: (value) => ref
                       .read(customerProvider
@@ -79,7 +93,6 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
                 TextFormField(
                   decoration: const InputDecoration(
                     labelText: 'Name',
-                    border: OutlineInputBorder(),
                   ),
                   onChanged: (value) => ref
                       .read(customerProvider.notifier)
@@ -94,7 +107,6 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
                 TextFormField(
                   decoration: const InputDecoration(
                     labelText: 'Surname',
-                    border: OutlineInputBorder(),
                   ),
                   onChanged: (value) => ref
                       .read(customerProvider.notifier)
@@ -109,7 +121,6 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
                 TextFormField(
                   decoration: const InputDecoration(
                     labelText: 'Phone Number',
-                    border: OutlineInputBorder(),
                   ),
                   keyboardType: TextInputType.phone,
                   onChanged: (value) => ref
@@ -125,7 +136,6 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
                 TextFormField(
                   decoration: const InputDecoration(
                     labelText: 'Select Location for address',
-                    border: OutlineInputBorder(),
                   ),
                   controller: _addressController,
                   readOnly: true, // Make the field read-only

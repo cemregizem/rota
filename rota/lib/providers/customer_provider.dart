@@ -43,7 +43,8 @@ class CustomerNotifier extends StateNotifier<Map<String, dynamic>> {//Müşteri 
   }
     final database = FirebaseDatabase.instance.ref('rotaData/${user.uid}/customers');
     //giriş yapmış kullanıcıya yeni customer ekler.
-
+    
+    
     // Get the current customer count to assign a customer number
     int customerNumber = await getCustomerCount() ;
 

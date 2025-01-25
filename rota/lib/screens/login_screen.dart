@@ -29,16 +29,26 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             children: [
               Image.asset(
                 'assets/images/logo2.png', 
-                height: 400, 
-                width: 400, 
+                height: 350, 
+                width: 350, 
               ),
               
               // Form
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 32, vertical: 40),
+                  padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 10,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
+                ),
                 width: double.infinity,
-                constraints: const BoxConstraints(maxWidth: 400),
+                constraints: const BoxConstraints(maxWidth: 350),
                 child: Form(
                   key: _formKey,
                   child: Column(
@@ -70,7 +80,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          backgroundColor: const Color(0xFFDC2A34), 
+                          backgroundColor: const Color(0xFF244D3E),
                         ),
                         child: const Text(
                           'Login',
@@ -87,7 +97,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const RegisterScreen()),
+                      MaterialPageRoute(builder: (context) => RegisterScreen()),
                     );
                   },
                   child: const Text(
