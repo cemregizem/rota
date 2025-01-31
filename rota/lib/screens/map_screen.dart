@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rota/models/customer.dart';
 import 'package:rota/providers/customer_list_provider.dart';
 import 'package:rota/providers/location_provider.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -12,9 +11,9 @@ import 'package:rota/services/route_service.dart';
 import 'package:rota/components/bottom_navigation_bar.dart';
 
 class MapScreen extends ConsumerWidget {
-  const MapScreen({super.key, required this.customers});
+  const MapScreen({super.key});
   //List<Consumer> parametre olarak alırız.Map üzerinde göstereceğimiz için
-  final List<Customer> customers;
+  //final List<Customer> customers;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -35,16 +34,14 @@ class MapScreen extends ConsumerWidget {
       ),
       body: locationAsyncValue.when(
         data: (position) {
-          final userLocation = LatLng(
-              position.latitude,
-              position
-                  .longitude); //lokasyon elde edilince latitude ve lonitude olarak çevirir
+          final userLocation = LatLng(position.latitude,position.longitude); //lokasyon elde edilince latitude ve lonitude olarak çevirir
 
           // Create markers for each customer
           final customerMarkers = customers
+              .where((customer) => customer.location != null)
               .map(
                 (customer) => Marker(
-                  point: customer.location,
+                  point: customer.location!,
                   width: 80.0,
                   height: 80.0,
                   builder: (ctx) => GestureDetector(

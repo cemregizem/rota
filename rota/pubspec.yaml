@@ -23,6 +23,9 @@ dependencies:
   flutter_lints: ^4.0.0
   flutter_native_splash: ^2.4.1
   signature: ^5.5.0
+  freezed: ^2.5.2
+  freezed_annotation: ^2.4.4
+  json_annotation: ^4.9.0
 
 dev_dependencies:
   flutter_test:
@@ -30,6 +33,8 @@ dev_dependencies:
   riverpod_generator: ^2.4.0
   custom_lint: ^0.6.4
   riverpod_lint: ^2.3.10
+  build_runner: ^2.4.11
+  json_serializable: ^6.8.0
 
 flutter:
   uses-material-design: true

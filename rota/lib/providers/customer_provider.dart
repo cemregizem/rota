@@ -1,15 +1,17 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:rota/models/customer.dart';
 //StateProvider basit değişken dataları tutmak için kullanılır
 final customerProvider =
-    StateNotifierProvider<CustomerNotifier, Map<String, dynamic>>((ref) {
+    StateNotifierProvider<CustomerNotifier, Customer>((ref) {
   return CustomerNotifier();
 });
 
-class CustomerNotifier extends StateNotifier<Map<String, dynamic>> {//Müşteri bilgilerini bir map gibi sakladıgımız StateNotifier sınıfı
+class CustomerNotifier extends StateNotifier<Customer> {//Müşteri bilgilerini bir map gibi sakladıgımız StateNotifier sınıfı
 
-  CustomerNotifier() : super({});  
+   CustomerNotifier() : super(Customer.initial());
 
    // Fetch the current customer count for the logged-in user
   Future<int> getCustomerCount() async {
@@ -29,10 +31,16 @@ class CustomerNotifier extends StateNotifier<Map<String, dynamic>> {//Müşteri 
 
 
 
- void updateField(String key, dynamic value) {
-  state = {...state, key: value};  // Müşteri bilgilerinde bir alanı günceller.
-}                                  //Yeni müşteri yaratma alanında key value değerleriyle state değiştirilir. 
-
+   void updateCustomer({String? packageNumber, String? name, String? surname, String? phone, LatLng? location, String? address}) {
+    state = state.copyWith(
+      packageNumber: packageNumber ?? state.packageNumber,
+      name: name ?? state.name,
+      surname: surname ?? state.surname,
+      phone: phone ?? state.phone,
+      location: location ?? state.location,
+      address: address ?? state.address,
+    );
+  }
 
   // Save to Firebase Realtime Database
   Future<void> saveToFirebase() async {
@@ -47,25 +55,15 @@ class CustomerNotifier extends StateNotifier<Map<String, dynamic>> {//Müşteri 
     
     // Get the current customer count to assign a customer number
     int customerNumber = await getCustomerCount() ;
+    // Save customer data using Freezed `toJson()`
+    await database.push().set(state.copyWith(customerNumber: customerNumber).toJson());
 
-    await database.push().set({
-      'packageNumber':state['packageNumber'],
-      'name': state['name'],
-      'surname': state['surname'],
-      'phone': state['phone'],
-      'location': {
-        'latitude': state['location'].latitude,
-        'longitude': state['location'].longitude,
-      }, // Store LatLng as a string
-      'address': state['address'],
-      'deliverStatus':false,
-      'customerNumber': customerNumber, 
-    });
+
   }
 
     // Müşteri verilerini sıfırlamak için kullanılan metot
   void clearCustomerData() {
-    state = {};  // Müşteri verilerini sıfırla
+     state = Customer.initial();  // Reset to initial state
   }
   
 }

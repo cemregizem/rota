@@ -7,8 +7,9 @@ import 'package:rota/providers/customer_list_provider.dart';
 final customerDeliverStatusProvider =
     FutureProvider.family<void, Customer>((ref, customer) async {
   // Toggle the deliverStatus before updating
-
-  final newStatus = !customer.deliverStatus;
+print('buradaaa');
+  final updatedCustomer = customer.copyWith(deliverStatus: !customer.deliverStatus);
+   //Freezed modeli immutable olduğu için copyWith ile yeni bir nesne oluşturduk.
 
   final user = ref.read(firebaseAuthProvider).currentUser;
   if (user == null) {
@@ -19,9 +20,10 @@ final customerDeliverStatusProvider =
   final database = FirebaseDatabase.instance
       .ref('rotaData/${user.uid}/customers/${customer.id}');
 
-  await database.update({
-    'deliverStatus': newStatus,
-  });
+  print('hellooo');
+  await database.update({'deliverStatus': updatedCustomer.deliverStatus});
+  print('Delivery status updated in Firebase: ${updatedCustomer.deliverStatus}');
+
 
   // fetch the customer list and update screen
   await ref.read(customerListProvider.notifier).fetchCustomers();

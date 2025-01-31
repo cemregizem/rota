@@ -29,10 +29,9 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final customerData = ref.watch(customerProvider);
+   // final customerData = ref.watch(customerProvider);
 
     return Scaffold(
-      
       appBar: AppBar(
         title: const Text(
           'New Customer',
@@ -46,11 +45,11 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
       body: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.all(20),
-          margin:const EdgeInsets.all(10),
+          margin: const EdgeInsets.all(10),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(20),
-            boxShadow: [
+            boxShadow: const [
               BoxShadow(
                 color: Colors.black26,
                 blurRadius: 10,
@@ -82,7 +81,7 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
                   onChanged: (value) => ref
                       .read(customerProvider
                           .notifier) //müşteri verisini güncellenir.
-                      .updateField('packageNumber', value),
+                      .updateCustomer(packageNumber: value),
                   validator: (value) => value == null || value.isEmpty
                       ? 'Please enter a package number'
                       : null,
@@ -96,7 +95,7 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
                   ),
                   onChanged: (value) => ref
                       .read(customerProvider.notifier)
-                      .updateField('name', value),
+                      .updateCustomer(name: value),
                   validator: (value) => value == null || value.isEmpty
                       ? 'Please enter a name'
                       : null,
@@ -110,7 +109,7 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
                   ),
                   onChanged: (value) => ref
                       .read(customerProvider.notifier)
-                      .updateField('surname', value),
+                      .updateCustomer(surname: value),
                   validator: (value) => value == null || value.isEmpty
                       ? 'Please enter a surname'
                       : null,
@@ -125,7 +124,7 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
                   keyboardType: TextInputType.phone,
                   onChanged: (value) => ref
                       .read(customerProvider.notifier)
-                      .updateField('phone', value),
+                      .updateCustomer(phone: value),
                   validator: (value) => value == null || value.isEmpty
                       ? 'Please enter a phone number'
                       : null,
@@ -153,7 +152,7 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
                     if (location != null) {
                       ref
                           .read(customerProvider.notifier)
-                          .updateField('location', location);
+                          .updateCustomer(location: location);
 
                       try {
                         // koordinatları kullanarak ters geocoding işlemi yapan bir fonksiyon
@@ -168,7 +167,7 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
                           //Alnınan yer bilgileri bu formatta birleştirilir.
                           ref
                               .read(customerProvider.notifier)
-                              .updateField('address', formattedAddress);
+                              .updateCustomer(address: formattedAddress);
                           //Alınan yer bilgileri customerProvider a kaydedilir
                           _addressController.text = formattedAddress;
                         } else {
@@ -198,8 +197,7 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
                 // Submit button
                 ElevatedButton(
                   onPressed: () async {
-                    if (_formKey.currentState!.validate() &&
-                        customerData['location'] != null) {
+                    if (_formKey.currentState!.validate()) {
                       await ref
                           .read(customerProvider.notifier)
                           .saveToFirebase();
@@ -220,7 +218,7 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                const MapScreen(customers: []),
+                                const MapScreen(),
                           ),
                         );
                       }

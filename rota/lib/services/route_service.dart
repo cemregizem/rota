@@ -16,7 +16,10 @@ Future<void> createRoute(BuildContext context, WidgetRef ref) async {
     return;
   }
 
-  final customerLocations = ref.watch(customerListProvider);
+  final customerLocations = ref.watch(customerListProvider)
+      .where((customer) => customer.location != null)
+      .toList();
+
   if (customerLocations.isEmpty) {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('No customers to create a route for.')),
@@ -29,8 +32,8 @@ Future<void> createRoute(BuildContext context, WidgetRef ref) async {
   for (int i = 0; i < customerLocations.length; i++) {
     final startLocation = i == 0
         ? LatLng(userLocation.latitude, userLocation.longitude)
-        : customerLocations[i - 1].location;
-    final endLocation = customerLocations[i].location;
+        : customerLocations[i - 1].location!;
+    final endLocation = customerLocations[i].location!;
 
     try {
       final segment = await ref.read(routeProvider({

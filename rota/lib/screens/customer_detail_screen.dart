@@ -6,6 +6,7 @@ import 'package:rota/models/customer.dart';
 import 'package:rota/providers/customer_delivered_provider.dart';
 import 'package:rota/components/card.dart';
 import 'package:rota/components/elevated_button.dart';
+import 'package:rota/providers/customer_list_provider.dart';
 import 'package:rota/providers/location_provider.dart';
 import 'package:rota/providers/route_provider.dart';
 import 'package:rota/providers/state_provider.dart';
@@ -108,7 +109,7 @@ class CustomerDetailScreen extends ConsumerWidget {
       // Rota oluşturulur
       final polyline = await ref.read(routeProvider({
         'userLocation': userLocation,
-        'customerLocation': customerLocation
+        'customerLocation': customerLocation!
       }).future);
 
       // Update the polyline state
@@ -118,9 +119,7 @@ class CustomerDetailScreen extends ConsumerWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const MapScreen(
-              customers: [],
-            ),
+            builder: (context) => const MapScreen(),
           ),
         );
       }
@@ -135,7 +134,14 @@ class CustomerDetailScreen extends ConsumerWidget {
   }
 
   Future<void> _markAsDelivered(BuildContext context, WidgetRef ref) async {
-    await DeliveryBottomSheet.show(
+    // provider kullanarak deliverystatusu güncellemek için işlem yapılır
+    await ref.read(customerDeliverStatusProvider(customer).future);
+    print('Delivery status updated successfully');
+    // Refresh the customer list to force a UI rebuild
+    ref.refresh(customerListProvider);
+    await ref.read(userProvider.notifier).incrementDeliveredPackageCount();
+    //await Future.delayed(const Duration(seconds: 2));
+    /* await DeliveryBottomSheet.show(
       context,
       onCameraTap: () {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -152,8 +158,7 @@ class CustomerDetailScreen extends ConsumerWidget {
               builder: (context) => SignatureScreen(
                 onSave: (signatureUrl) async {
                   // Save the signature URL to Firestore or update Riverpod state
-                  await ref
-                      .read(customerDeliverStatusProvider(customer).future);
+                 // await ref.read(customerDeliverStatusProvider(customer).future);
 
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
@@ -166,12 +171,8 @@ class CustomerDetailScreen extends ConsumerWidget {
         });
       },
     );
+*/
 
-    // provider kullanarak deliverystatusu güncellemek için işlem yapılır
-    await ref.read(customerDeliverStatusProvider(customer).future);
-
-    await ref.read(userProvider.notifier).incrementDeliveredPackageCount();
-    await Future.delayed(const Duration(seconds: 2));
     if (context.mounted) {
       Navigator.pop(context);
     }

@@ -1,65 +1,60 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:latlong2/latlong.dart';
+//dart run build_runner build --delete-conflicting-outputs ile
+part 'customer.freezed.dart';
+part 'customer.g.dart';
 
-class Customer {
-  final String id;
-  final String packageNumber;
-  final String name;
-  final String surname;
-  final String phone;
-  final String address;
-  final LatLng location;
-  bool deliverStatus;
-  final int customerNumber; // Ensure this is of type int
-
-  Customer({
-    required this.id,
-    required this.packageNumber,
-    required this.name,
-    required this.surname,
-    required this.phone,
-    required this.address,
-    required this.location,
-    this.deliverStatus = false,
-    required this.customerNumber,
-
-  });
+//freezed kütüphanesi, Customer nesnesi için özel bir _Customer sınıfı oluşturur.
+//_Customer private olduğu için doğrudan çağrılmaz.bu yüzden factory ile bi nesne oluşturulur.
+//Customer nesneleri immutable olur.
+//copyWith gibi fonksiyonlar kullanarak yeni nesne türetebiliriz
+@freezed
+class Customer with _$Customer {
   
+  const factory Customer({
+     String? id,
+     String? packageNumber,
+     String? name,
+     String? surname,
+     String? phone,
+     String? address,
+    @LatLngConverter() LatLng? location,
+    @Default(false) bool deliverStatus,
+    int? customerNumber,
+  }) = _Customer;
 
-  // Convert a customer from a Map (data from Firebase)
-  factory Customer.fromMap(String id, Map<String, dynamic> data) {
-    final locationData = data['location'] ?? {};
-    final latitude = locationData['latitude'] ?? 0.0;
-    final longitude = locationData['longitude'] ?? 0.0;
 
-    return Customer(
-      id: id,
-      packageNumber: data['packageNumber'] ?? '',
-      name: data['name'] ?? '',
-      surname: data['surname'] ?? '',
-      phone: data['phone'] ?? '',
-      address: data['address'] ?? '',
-      location: LatLng(latitude, longitude),  // Convert latitude & longitude to LatLng
-      deliverStatus: data['deliverStatus'] ?? false,
-      customerNumber: data['customerNumber'] ?? 0, // Get customerNumber from the database
-      
-      
-    );
+
+  factory Customer.fromJson(Map<String, dynamic> json) => _$CustomerFromJson(json);
+
+    /// Initial empty customer instance with default values
+  static Customer initial() =>  Customer(
+        id: '',
+        packageNumber: '',
+        name: '',
+        surname: '',
+        phone: '',
+        address: '',
+        location: LatLng(0.0, 0.0), // Location is nullable
+        customerNumber: 0, // Set a default number
+      );
+}
+
+
+/// LatLng sınıfı JSON dönüşümlerini desteklemiyor o yüzden JsonConverter kullandık.
+class LatLngConverter implements JsonConverter<LatLng, Map<String, dynamic>> {
+  const LatLngConverter();
+
+  @override
+  LatLng fromJson(Map<String, dynamic> json) {
+    return LatLng(json['latitude'] ?? 0.0, json['longitude'] ?? 0.0);
   }
 
-  // Convert customer to a Map for saving to Firebase
-  Map<String, dynamic> toMap() {
+  @override
+  Map<String, dynamic> toJson(LatLng object) {
     return {
-      'packageNumber':packageNumber,
-      'name': name,
-      'surname': surname,
-      'phone': phone,
-      'address': address,
-      'location': {  // Store location as latitude and longitude
-        'latitude': location.latitude,
-        'longitude': location.longitude,
-      },
-      'deliverStatus': deliverStatus,
-      'customerNumber':customerNumber,
+      'latitude': object.latitude,
+      'longitude': object.longitude,
     };
   }
 }

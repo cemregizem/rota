@@ -31,7 +31,7 @@ class CustomBottomNavigationBar extends ConsumerWidget {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => const MapScreen(customers: []),
+                builder: (context) => const MapScreen(),
               ),
             );
             break;
