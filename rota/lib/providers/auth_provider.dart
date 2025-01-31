@@ -28,7 +28,7 @@ class AuthController {
                 password: password,
               );
 
-      // Store additional user info in the customers table
+      // for storing user info
       final user = userCredential.user;
 
       if (user != null) {
@@ -54,7 +54,7 @@ class AuthController {
             email: email,
             password: password,
           );
-      // Fetch customer list for the logged-in user
+      // Fetch customer list for the user
       await _ref.read(customerListProvider.notifier).fetchCustomers();
     } catch (e) {
       rethrow;
