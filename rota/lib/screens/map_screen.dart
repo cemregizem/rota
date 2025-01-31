@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rota/models/customer.dart';
-import 'package:rota/providers/customer_list_provider.dart';
+import 'package:rota/notifiers/customer_list_notifier.dart';
 import 'package:rota/providers/location_provider.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -20,7 +20,7 @@ class MapScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final locationAsyncValue = ref.watch(
         locationProvider); //Kullanıcının şuanki lokasyonunu sağlamak için locationProviderı izler
-    final customers = ref.watch(customerListProvider); //müşteri listesi
+    final customers = ref.watch(customerListNotifierProvider); //müşteri listesi
 
     return Scaffold(
       appBar: AppBar(

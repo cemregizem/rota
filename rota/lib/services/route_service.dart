@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:rota/providers/customer_list_provider.dart';
+import 'package:rota/notifiers/customer_list_notifier.dart';
 import 'package:rota/providers/location_provider.dart';
 import 'package:rota/providers/route_provider.dart';
 import 'package:rota/providers/route_status_provider.dart';
@@ -16,7 +16,7 @@ Future<void> createRoute(BuildContext context, WidgetRef ref) async {
     return;
   }
 
-  final customerLocations = ref.watch(customerListProvider);
+  final customerLocations = ref.watch(customerListNotifierProvider);
   if (customerLocations.isEmpty) {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('No customers to create a route for.')),

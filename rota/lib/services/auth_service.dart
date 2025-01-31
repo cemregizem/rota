@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rota/providers/auth_provider.dart';
-import 'package:rota/providers/customer_provider.dart';
+import 'package:rota/notifiers/new_customer_notifier.dart';
 import 'package:rota/providers/package_provider.dart';
 import 'package:rota/providers/state_provider.dart';
-import 'package:rota/providers/user_provider.dart';
+import 'package:rota/notifiers/user_notifier.dart';
 import 'package:rota/screens/home.dart';
 import 'package:rota/screens/login_screen.dart';
 
@@ -17,7 +17,7 @@ class AuthService {
       // Fetch the logged-in user's data
       final userId = ref.read(firebaseAuthProvider).currentUser?.uid;
       if (userId != null) {
-        await ref.read(userProvider.notifier).fetchUserData(userId);
+        await ref.read(userNotifierProvider.notifier).fetchUserData(userId);
       }
       if (context.mounted) {
         //Buildcontext zamanlamaya duyarlıdır.Asenkron işlemlerden sonra build
@@ -53,7 +53,7 @@ class AuthService {
       ref.read(polylineStateProvider.notifier).updatePolyline([]);
 
       ref
-          .read(customerProvider.notifier)
+          .read(customerNotifierProvider.notifier)
           .clearCustomerData(); // Müşteri verilerini sıfırlama
       if (context.mounted) {
         Navigator.pushReplacement(

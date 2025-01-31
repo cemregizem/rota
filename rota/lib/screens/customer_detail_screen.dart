@@ -3,13 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:rota/components/bottom_sheet.dart';
 import 'package:rota/models/customer.dart';
-import 'package:rota/providers/customer_delivered_provider.dart';
+import 'package:rota/providers/customer_delivered_notifier.dart';
 import 'package:rota/components/card.dart';
 import 'package:rota/components/elevated_button.dart';
 import 'package:rota/providers/location_provider.dart';
 import 'package:rota/providers/route_provider.dart';
 import 'package:rota/providers/state_provider.dart';
-import 'package:rota/providers/user_provider.dart';
+import 'package:rota/notifiers/user_notifier.dart';
 import 'package:rota/screens/map_screen.dart';
 import 'package:rota/screens/signature_screen.dart';
 
@@ -153,7 +153,7 @@ class CustomerDetailScreen extends ConsumerWidget {
                 onSave: (signatureUrl) async {
                   // Save the signature URL to Firestore or update Riverpod state
                   await ref
-                      .read(customerDeliverStatusProvider(customer).future);
+                      .read(customerDeliverStatusProvider(customer:customer).future);
 
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
@@ -168,9 +168,9 @@ class CustomerDetailScreen extends ConsumerWidget {
     );
 
     // provider kullanarak deliverystatusu güncellemek için işlem yapılır
-    await ref.read(customerDeliverStatusProvider(customer).future);
+    await ref.read(customerDeliverStatusProvider(customer:customer).future);
 
-    await ref.read(userProvider.notifier).incrementDeliveredPackageCount();
+    await ref.read(userNotifierProvider.notifier).incrementDeliveredPackageCount();
     await Future.delayed(const Duration(seconds: 2));
     if (context.mounted) {
       Navigator.pop(context);

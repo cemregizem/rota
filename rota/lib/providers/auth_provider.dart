@@ -1,7 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:rota/providers/customer_list_provider.dart';
+import 'package:rota/notifiers/customer_list_notifier.dart';
 
 // The FirebaseAuth provider
 final firebaseAuthProvider = Provider<FirebaseAuth>((ref) {
@@ -55,7 +55,7 @@ class AuthController {
             password: password,
           );
       // Fetch customer list for the logged-in user
-      await _ref.read(customerListProvider.notifier).fetchCustomers();
+      await _ref.read(customerListNotifierProvider.notifier).fetchCustomers();
     } catch (e) {
       rethrow;
     }
@@ -63,7 +63,7 @@ class AuthController {
 
   // Logout function
   Future<void> logout() async {
-    _ref.read(customerListProvider.notifier).clearCustomers();
+    _ref.read(customerListNotifierProvider.notifier).clearCustomers();
     await _ref.read(firebaseAuthProvider).signOut();
   }
 }

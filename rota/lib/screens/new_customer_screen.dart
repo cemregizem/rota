@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:rota/components/bottom_navigation_bar.dart';
-import 'package:rota/providers/customer_provider.dart';
-import 'package:rota/providers/user_provider.dart';
+import 'package:rota/notifiers/new_customer_notifier.dart';
+import 'package:rota/notifiers/user_notifier.dart';
 import 'package:rota/screens/location_selection_screen.dart';
 import 'package:rota/screens/map_screen.dart';
 
@@ -29,7 +29,7 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final customerData = ref.watch(customerProvider);
+    final customerData = ref.watch(customerNotifierProvider);
 
     return Scaffold(
       
@@ -80,7 +80,7 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
                     labelText: 'Package Number',
                   ),
                   onChanged: (value) => ref
-                      .read(customerProvider
+                      .read(customerNotifierProvider
                           .notifier) //müşteri verisini güncellenir.
                       .updateField('packageNumber', value),
                   validator: (value) => value == null || value.isEmpty
@@ -95,7 +95,7 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
                     labelText: 'Name',
                   ),
                   onChanged: (value) => ref
-                      .read(customerProvider.notifier)
+                      .read(customerNotifierProvider.notifier)
                       .updateField('name', value),
                   validator: (value) => value == null || value.isEmpty
                       ? 'Please enter a name'
@@ -109,7 +109,7 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
                     labelText: 'Surname',
                   ),
                   onChanged: (value) => ref
-                      .read(customerProvider.notifier)
+                      .read(customerNotifierProvider.notifier)
                       .updateField('surname', value),
                   validator: (value) => value == null || value.isEmpty
                       ? 'Please enter a surname'
@@ -124,7 +124,7 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
                   ),
                   keyboardType: TextInputType.phone,
                   onChanged: (value) => ref
-                      .read(customerProvider.notifier)
+                      .read(customerNotifierProvider.notifier)
                       .updateField('phone', value),
                   validator: (value) => value == null || value.isEmpty
                       ? 'Please enter a phone number'
@@ -152,7 +152,7 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
                     );
                     if (location != null) {
                       ref
-                          .read(customerProvider.notifier)
+                          .read(customerNotifierProvider.notifier)
                           .updateField('location', location);
 
                       try {
@@ -167,7 +167,7 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
                               '${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.country}';
                           //Alnınan yer bilgileri bu formatta birleştirilir.
                           ref
-                              .read(customerProvider.notifier)
+                              .read(customerNotifierProvider.notifier)
                               .updateField('address', formattedAddress);
                           //Alınan yer bilgileri customerProvider a kaydedilir
                           _addressController.text = formattedAddress;
@@ -201,11 +201,11 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
                     if (_formKey.currentState!.validate() &&
                         customerData['location'] != null) {
                       await ref
-                          .read(customerProvider.notifier)
+                          .read(customerNotifierProvider.notifier)
                           .saveToFirebase();
 
                       await ref
-                          .read(userProvider.notifier)
+                          .read(userNotifierProvider.notifier)
                           .incrementPackageCount();
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rota/providers/user_provider.dart';
+import 'package:rota/notifiers/user_notifier.dart';
 import 'package:rota/services/auth_service.dart';
 import 'package:rota/components/bottom_navigation_bar.dart';
 
@@ -12,7 +12,7 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final AuthService authService = AuthService();
-    final user = ref.watch(userProvider); // Fetch user from the provider
+    final user = ref.watch(userNotifierProvider); // Fetch user from the provider
 
     return Scaffold(
       appBar: AppBar(

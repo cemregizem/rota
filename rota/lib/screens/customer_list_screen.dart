@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rota/components/bottom_navigation_bar.dart';
-import 'package:rota/providers/customer_list_provider.dart';
+import 'package:rota/notifiers/customer_list_notifier.dart';
 
 import 'package:rota/screens/customer_detail_screen.dart';
 import 'package:rota/components/card.dart';
@@ -17,12 +17,12 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
   @override
   void initState() {
     super.initState();
-    ref.read(customerListProvider.notifier).fetchCustomers();
+    ref.read(customerListNotifierProvider.notifier).fetchCustomers();
   }
 
   @override
   Widget build(BuildContext context) {
-    final customers = ref.watch(customerListProvider);
+    final customers = ref.watch(customerListNotifierProvider);
 
     return Scaffold(
       appBar: AppBar(
