@@ -1,8 +1,13 @@
+import 'dart:io';
+
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:rota/components/bottom_sheet.dart';
 import 'package:rota/models/customer.dart';
+import 'package:rota/providers/auth_provider.dart';
 import 'package:rota/providers/customer_delivered_provider.dart';
 import 'package:rota/components/card.dart';
 import 'package:rota/components/elevated_button.dart';
@@ -12,6 +17,8 @@ import 'package:rota/providers/state_provider.dart';
 import 'package:rota/providers/user_provider.dart';
 import 'package:rota/screens/map_screen.dart';
 import 'package:rota/screens/signature_screen.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class CustomerDetailScreen extends ConsumerWidget {
   final Customer customer;
@@ -66,7 +73,7 @@ class CustomerDetailScreen extends ConsumerWidget {
                             children: [
                               CommonElevatedButton(
                                 onPressed: () async {
-                                  _markAsDelivered(context, ref);
+                                  await _markAsDelivered(context, ref);
                                 },
                                 label: customer.deliverStatus
                                     ? 'Delivered'
@@ -84,11 +91,54 @@ class CustomerDetailScreen extends ConsumerWidget {
                             ],
                           ),
                         )
-                      : const Center(
-                          child: Text('Delivered',
-                              style: TextStyle(
-                                  color: Colors.green,
-                                  fontWeight: FontWeight.bold)))
+                      : Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            if (customer.signatureUrl != null)
+                              const Text('Customer Signature: ',
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                            if (customer.signatureUrl != null)
+                              Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: Colors.black,
+                                        width:
+                                            2), // Black border with 2px width
+                                    borderRadius: BorderRadius.circular(
+                                        8), // Optional: Rounded corners
+                                  ),
+                                  padding: const EdgeInsets.all(5),
+                                  margin: const EdgeInsets.all(5),
+                                  height: 70,
+                                  width: 120,
+                                  child: Image.network(customer.signatureUrl!)),
+                            if (customer.photoUrl != null)
+                              const Text('Customer Photo: ',
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                            if (customer.photoUrl != null)
+                              Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: Colors.black,
+                                        width:
+                                            2), // Black border with 2px width
+                                    borderRadius: BorderRadius.circular(
+                                        8), // Optional: Rounded corners
+                                  ),
+                                  padding: const EdgeInsets.all(5),
+                                  margin: const EdgeInsets.all(5),
+                                  height: 70,
+                                  width: 120,
+                                  child: Image.network(customer.photoUrl!)),
+                            const Center(
+                                child: Text('Delivered',
+                                    style: TextStyle(
+                                        color: Colors.green,
+                                        fontWeight: FontWeight.bold))),
+                          ],
+                        ),
                 ],
               ),
             ),
@@ -135,13 +185,13 @@ class CustomerDetailScreen extends ConsumerWidget {
   }
 
   Future<void> _markAsDelivered(BuildContext context, WidgetRef ref) async {
+    // Save the signature URL to Firestore or update Riverpod state
+    await ref.read(customerDeliverStatusProvider(customer).future);
     await DeliveryBottomSheet.show(
       context,
-      onCameraTap: () {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Camera option selected')),
-        );
-        // Add actual camera functionality here
+      onCameraTap: () async {
+        Navigator.pop(context); // Close the bottom sheet
+        await _handleCameraTap(context, ref, customer);
       },
       onSignatureTap: () {
         Navigator.pop(context); // Close the bottom sheet
@@ -151,15 +201,11 @@ class CustomerDetailScreen extends ConsumerWidget {
             MaterialPageRoute(
               builder: (context) => SignatureScreen(
                 onSave: (signatureUrl) async {
-                  // Save the signature URL to Firestore or update Riverpod state
-                  await ref
-                      .read(customerDeliverStatusProvider(customer).future);
-
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                        content: Text('Signature saved! URL: $signatureUrl')),
+                    const SnackBar(content: Text('Signature saved!')),
                   );
                 },
+                customer: customer,
               ),
             ),
           );
@@ -167,13 +213,48 @@ class CustomerDetailScreen extends ConsumerWidget {
       },
     );
 
-    // provider kullanarak deliverystatusu güncellemek için işlem yapılır
-    await ref.read(customerDeliverStatusProvider(customer).future);
-
     await ref.read(userProvider.notifier).incrementDeliveredPackageCount();
+    if (!context.mounted) return; // Widget dispose olmuşsa işlemi durdur
     await Future.delayed(const Duration(seconds: 2));
     if (context.mounted) {
       Navigator.pop(context);
     }
   }
+
+ Future<void> _handleCameraTap(BuildContext context, WidgetRef ref, Customer customer) async {
+  final PermissionStatus status = await Permission.camera.request();
+   if (status.isGranted) {
+    print("Camera permission granted");
+  } else if (status.isDenied) {
+    print("Camera permission denied, requesting...");
+    await Permission.camera.request();
+  } else if (status.isPermanentlyDenied) {
+    print("Camera permission permanently denied. Open settings.");
+    openAppSettings();
+  }
+
+  final ImagePicker imagePicker = ImagePicker();
+  final XFile? image = await imagePicker.pickImage(
+    source: ImageSource.camera,
+    imageQuality: 80, // Adjust image quality if needed
+  );
+
+  if (image != null) {
+    final storageRef = FirebaseStorage.instance.ref().child('photos/${customer.id}.png');
+    await storageRef.putFile(File(image.path));
+    final photoUrl = await storageRef.getDownloadURL();
+
+    final database = FirebaseDatabase.instance.ref(
+      'rotaData/${ref.read(firebaseAuthProvider).currentUser!.uid}/customers/${customer.id}',
+    );
+    await database.update({'photoUrl': photoUrl});
+
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Photo saved!')),
+      );
+    }
+  }
+}
+
 }

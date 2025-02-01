@@ -44,8 +44,8 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
                 final customer = customers[index];
 
                 return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
+                  onTap: () async {
+                   await Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) =>
