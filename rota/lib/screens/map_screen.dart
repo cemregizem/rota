@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rota/components/custom_app_bar.dart';
 import 'package:rota/models/customer.dart';
 import 'package:rota/providers/customer_list_provider.dart';
 import 'package:rota/providers/location_provider.dart';
@@ -15,24 +16,17 @@ class MapScreen extends ConsumerWidget {
   const MapScreen({super.key, required this.customers});
   //List<Consumer> parametre olarak alırız.Map üzerinde göstereceğimiz için
   final List<Customer> customers;
+  
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final routeService = RouteService();
     final locationAsyncValue = ref.watch(
         locationProvider); //Kullanıcının şuanki lokasyonunu sağlamak için locationProviderı izler
     final customers = ref.watch(customerListProvider); //müşteri listesi
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Routes Map',
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
-      ),
+      appBar:const CustomAppBar(title: 'Map'),
       body: locationAsyncValue.when(
         data: (position) {
           final userLocation = LatLng(
@@ -142,10 +136,10 @@ class MapScreen extends ConsumerWidget {
                       ElevatedButton.icon(
                         onPressed: () {
                           if (ref.watch(routeStatusProvider)) {
-                            cancelRoute(
+                            routeService.cancelRoute(
                                 context, ref); // Call cancelRoute if active
                           } else {
-                            createRoute(
+                            routeService.createRoute(
                                 context, ref); // Call createRoute if inactive
                             ref
                                 .read(routeStatusProvider.notifier)

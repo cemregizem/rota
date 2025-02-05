@@ -1,19 +1,24 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rota/models/customer.dart';
+import 'package:rota/services/delivery_service.dart';
 import 'package:signature/signature.dart';
 import 'package:rota/providers/signature_provider.dart';
 
+
 class SignatureScreen extends ConsumerWidget {
   final Function(String imageUrl) onSave;
+  final Customer customer;
 
-  const SignatureScreen({super.key, required this.onSave});
+  const SignatureScreen(
+      {super.key, required this.onSave, required this.customer});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final signatureController = ref.read(signatureControllerProvider);
-
+    final signatureController = ref.watch(signatureControllerProvider);
+    //watch() ile widget rebuild olduğunda otomatik güncellenmesini sağlıyoruz.
+    //Böylece read() yerine sürekli güncel veriyi kullanıyoruz.
+   final deliveryService = DeliveryService();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF244D3E),
@@ -62,26 +67,13 @@ class SignatureScreen extends ConsumerWidget {
               ),
               ElevatedButton(
                 onPressed: () async {
-                  if (signatureController.isNotEmpty) {
-                  /*  final signatureImage = await signatureController.toImage();
-                    final byteData = await signatureImage!
-                        .toByteData(format: ImageByteFormat.png);
-                    final buffer = byteData!.buffer.asUint8List();
-
-                   
-                   
-                     final signatureUrl = await uploadSignature(buffer);
-                    onSave(signatureUrl); */
-
-                    if (context.mounted) {
-                      Navigator.pop(context);
-                    }
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                          content: Text('Please provide a signature')),
-                    );
-                  }
+                     await deliveryService.saveSignature(
+                    context,
+                    ref,
+                    signatureController,
+                    customer,
+                    onSave,
+                  );
                 },
                 child: const Text('Save'),
               ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:rota/components/custom_app_bar.dart';
 
 //Kullanıcının adres için haritadan lokasyon seçtiği ekran
 class LocationSelectorScreen extends StatefulWidget {
@@ -12,11 +13,11 @@ class LocationSelectorScreen extends StatefulWidget {
 
 class LocationSelectorScreenState extends State<LocationSelectorScreen> {
   LatLng selectedLocation = LatLng(38.457891491766354, 27.21305095847274);
-
+ 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Select Location')),
+      appBar: const CustomAppBar(title: 'Select Location'),
       body: FlutterMap(
         options: MapOptions(
           center: selectedLocation,

@@ -9,8 +9,9 @@ class Customer {
   final String address;
   final LatLng location;
   bool deliverStatus;
-  final int customerNumber; 
-
+  final int customerNumber;
+  final String? signatureUrl;
+  final String? photoUrl;
   Customer({
     required this.id,
     required this.packageNumber,
@@ -21,6 +22,8 @@ class Customer {
     required this.location,
     this.deliverStatus = false,
     required this.customerNumber,
+    this.signatureUrl,
+    this.photoUrl,
 
   });
   
@@ -41,6 +44,8 @@ class Customer {
       location: LatLng(latitude, longitude),  // Convert latitude & longitude to LatLng
       deliverStatus: data['deliverStatus'] ?? false,
       customerNumber: data['customerNumber'] ?? 0, 
+      signatureUrl: data['signatureUrl'],
+      photoUrl: data['photoUrl'],
       
       
     );
@@ -60,6 +65,8 @@ class Customer {
       },
       'deliverStatus': deliverStatus,
       'customerNumber':customerNumber,
+      'signatureUrl': signatureUrl,
+      'photoUrl': photoUrl
     };
   }
 }

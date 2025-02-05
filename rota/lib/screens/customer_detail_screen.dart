@@ -1,17 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:latlong2/latlong.dart';
-import 'package:rota/components/bottom_sheet.dart';
+import 'package:rota/components/custom_app_bar.dart';
 import 'package:rota/models/customer.dart';
-import 'package:rota/providers/customer_delivered_provider.dart';
 import 'package:rota/components/card.dart';
 import 'package:rota/components/elevated_button.dart';
-import 'package:rota/providers/location_provider.dart';
-import 'package:rota/providers/route_provider.dart';
-import 'package:rota/providers/state_provider.dart';
-import 'package:rota/providers/user_provider.dart';
-import 'package:rota/screens/map_screen.dart';
-import 'package:rota/screens/signature_screen.dart';
+import 'package:rota/services/delivery_service.dart';
+import 'package:rota/services/route_service.dart';
 
 class CustomerDetailScreen extends ConsumerWidget {
   final Customer customer;
@@ -20,8 +14,10 @@ class CustomerDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final deliveryService = DeliveryService();
+    final routeService= RouteService();
     return Scaffold(
-      appBar: AppBar(title: const Text('Customer Details')),
+      appBar: const CustomAppBar(title: 'Customer Detail',showBackButton: true,),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -51,12 +47,12 @@ class CustomerDetailScreen extends ConsumerWidget {
                   const SizedBox(height: 8),
                   Text(
                     'Phone: ${customer.phone}',
-                    style: const TextStyle(fontSize: 13, color: Colors.grey),
+                    style: TextStyle(fontSize: 13, color: Colors.grey[800]),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     'Address: ${customer.address}',
-                    style: const TextStyle(fontSize: 13),
+                    style: TextStyle(fontSize: 13, color: Colors.grey[800]),
                   ),
                   const SizedBox(height: 20),
                   customer.deliverStatus == false
@@ -66,7 +62,8 @@ class CustomerDetailScreen extends ConsumerWidget {
                             children: [
                               CommonElevatedButton(
                                 onPressed: () async {
-                                  _markAsDelivered(context, ref);
+                                  await deliveryService.markAsDelivered(
+                                      context, ref, customer);
                                 },
                                 label: customer.deliverStatus
                                     ? 'Delivered'
@@ -76,7 +73,7 @@ class CustomerDetailScreen extends ConsumerWidget {
                               const SizedBox(width: 16),
                               CommonElevatedButton(
                                 onPressed: () async {
-                                  _createRoute(context, ref);
+                                  routeService.createIndividualRoute(context, ref,customer);
                                 },
                                 label: 'Create Route',
                                 isDelivered: false,
@@ -84,11 +81,55 @@ class CustomerDetailScreen extends ConsumerWidget {
                             ],
                           ),
                         )
-                      : const Center(
-                          child: Text('Delivered',
-                              style: TextStyle(
-                                  color: Colors.green,
-                                  fontWeight: FontWeight.bold)))
+                      : Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            if (customer.signatureUrl != null)
+                              const Text('Customer Signature: ',
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                            if (customer.signatureUrl != null)
+                              Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: Colors.grey,
+                                        width:
+                                            2), // Black border with 2px width
+                                    borderRadius: BorderRadius.circular(
+                                        8), // Optional: Rounded corners
+                                  ),
+                                  padding: const EdgeInsets.all(5),
+                                  margin: const EdgeInsets.all(5),
+                                  height: 100,
+                                  width: 150,
+                                  child: Image.network(customer.signatureUrl!)),
+                            if (customer.photoUrl != null)
+                              Text('Package Photo: ',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.grey[800])),
+                            if (customer.photoUrl != null)
+                              Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: Colors.grey,
+                                        width:
+                                            2), // Black border with 2px width
+                                    borderRadius: BorderRadius.circular(
+                                        8), // Optional: Rounded corners
+                                  ),
+                                  padding: const EdgeInsets.all(5),
+                                  margin: const EdgeInsets.all(5),
+                                  height: 100,
+                                  width: 150,
+                                  child: Image.network(customer.photoUrl!)),
+                            const Center(
+                                child: Text('Delivered',
+                                    style: TextStyle(
+                                        color: Colors.green,
+                                        fontWeight: FontWeight.bold))),
+                          ],
+                        ),
                 ],
               ),
             ),
@@ -98,82 +139,5 @@ class CustomerDetailScreen extends ConsumerWidget {
     );
   }
 
-  Future<void> _createRoute(BuildContext context, WidgetRef ref) async {
-    final position = await ref.read(locationProvider.future);
-    final userLocation =
-        LatLng(position.latitude, position.longitude); //kullanıcı lokasyonu
-    final customerLocation = customer.location; //müşteri lokasyonu
-
-    try {
-      // Rota oluşturulur
-      final polyline = await ref.read(routeProvider({
-        'userLocation': userLocation,
-        'customerLocation': customerLocation
-      }).future);
-
-      // Update the polyline state
-      ref.read(polylineStateProvider.notifier).updatePolyline(polyline);
-      if (context.mounted) {
-        // Navigate back to Home Screen
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const MapScreen(
-              customers: [],
-            ),
-          ),
-        );
-      }
-    } catch (e) {
-      // Handle error
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error creating route: $e')),
-        );
-      }
-    }
-  }
-
-  Future<void> _markAsDelivered(BuildContext context, WidgetRef ref) async {
-    await DeliveryBottomSheet.show(
-      context,
-      onCameraTap: () {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Camera option selected')),
-        );
-        // Add actual camera functionality here
-      },
-      onSignatureTap: () {
-        Navigator.pop(context); // Close the bottom sheet
-        Future.delayed(Duration.zero, () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => SignatureScreen(
-                onSave: (signatureUrl) async {
-                  // Save the signature URL to Firestore or update Riverpod state
-                  await ref
-                      .read(customerDeliverStatusProvider(customer).future);
-
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                        content: Text('Signature saved! URL: $signatureUrl')),
-                  );
-                },
-              ),
-            ),
-          );
-        });
-      },
-    );
-
-    // provider kullanarak deliverystatusu güncellemek için işlem yapılır
-    await ref.read(customerDeliverStatusProvider(customer).future);
-
-    await ref.read(userProvider.notifier).incrementDeliveredPackageCount();
-    await Future.delayed(const Duration(seconds: 2));
-    if (context.mounted) {
-      Navigator.pop(context);
-    }
-  }
+ 
 }
