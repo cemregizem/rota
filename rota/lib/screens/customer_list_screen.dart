@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rota/components/bottom_navigation_bar.dart';
+import 'package:rota/components/custom_app_bar.dart';
 import 'package:rota/providers/customer_list_provider.dart';
 
 import 'package:rota/screens/customer_detail_screen.dart';
@@ -25,16 +26,7 @@ class _CustomerListScreenState extends ConsumerState<CustomerListScreen> {
     final customers = ref.watch(customerListProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Customer List',
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
-      ),
+      appBar: const CustomAppBar(title: 'Customer List'),
       body: customers.isEmpty
           ? const Center(child: Text('There isnt any customer!'))
           : ListView.builder(

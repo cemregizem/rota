@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:rota/components/bottom_navigation_bar.dart';
+import 'package:rota/components/custom_app_bar.dart';
+import 'package:rota/components/custom_container.dart';
 import 'package:rota/providers/customer_provider.dart';
 import 'package:rota/providers/user_provider.dart';
 import 'package:rota/screens/location_selection_screen.dart';
@@ -32,34 +34,9 @@ class _CustomerScreenState extends ConsumerState<CustomerScreen> {
     final customerData = ref.watch(customerProvider);
 
     return Scaffold(
-      
-      appBar: AppBar(
-        title: const Text(
-          'New Customer',
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
-      ),
+      appBar: const CustomAppBar(title: 'New Customer'),
       body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.all(20),
-          margin:const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: const [
-              BoxShadow(
-                color: Colors.black26,
-                blurRadius: 10,
-                offset: Offset(0, 4),
-              ),
-            ],
-          ),
-          width: double.infinity,
-          constraints: const BoxConstraints(maxWidth: 400),
+        child: CustomContainer(
           child: Form(
             key: _formKey,
             child: Column(

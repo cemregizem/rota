@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rota/components/custom_app_bar.dart';
 import 'package:rota/models/customer.dart';
 import 'package:rota/components/card.dart';
 import 'package:rota/components/elevated_button.dart';
@@ -14,8 +15,9 @@ class CustomerDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final deliveryService = DeliveryService();
+    final routeService= RouteService();
     return Scaffold(
-      appBar: AppBar(title: const Text('Customer Details')),
+      appBar: const CustomAppBar(title: 'Customer Detail',showBackButton: true,),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -71,7 +73,7 @@ class CustomerDetailScreen extends ConsumerWidget {
                               const SizedBox(width: 16),
                               CommonElevatedButton(
                                 onPressed: () async {
-                                  createRoute(context, ref);
+                                  routeService.createIndividualRoute(context, ref,customer);
                                 },
                                 label: 'Create Route',
                                 isDelivered: false,
@@ -137,39 +139,5 @@ class CustomerDetailScreen extends ConsumerWidget {
     );
   }
 
-  /*Future<void> _createRoute(BuildContext context, WidgetRef ref) async {
-    final position = await ref.read(locationProvider.future);
-    final userLocation =
-        LatLng(position.latitude, position.longitude); //kullanıcı lokasyonu
-    final customerLocation = customer.location; //müşteri lokasyonu
-
-    try {
-      // Rota oluşturulur
-      final polyline = await ref.read(routeProvider({
-        'userLocation': userLocation,
-        'customerLocation': customerLocation
-      }).future);
-
-      // Update the polyline state
-      ref.read(polylineStateProvider.notifier).updatePolyline(polyline);
-      if (context.mounted) {
-        // Navigate back to Home Screen
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const MapScreen(
-              customers: [],
-            ),
-          ),
-        );
-      }
-    } catch (e) {
-      // Handle error
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error creating route: $e')),
-        );
-      }
-    }
-  } */
+ 
 }
