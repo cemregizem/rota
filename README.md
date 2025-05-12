@@ -9,8 +9,6 @@ This project is an application where couriers can create accounts and log in. It
 - `flutter_lints`
 - `firebase_auth`
 
-The application is currently developed for iOS devices and has been tested up to iOS 17.
-
 ## Features
 - Firebase Authentication**: Users can securely log in.
 - Firebase Realtime Database**: Data is stored and synchronized in real-time.
